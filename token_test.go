@@ -1,4 +1,4 @@
-package openstack
+package visualization
 
 import (
 	"github.com/stretchr/testify/assert"
