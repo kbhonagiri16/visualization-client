@@ -1,4 +1,4 @@
-package log
+package visualization
 
 import (
 	"github.com/op/go-logging"
