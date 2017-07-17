@@ -1,0 +1,4 @@
+production:
+  dialect: mysql
+  datasource: mysql:password@tcp(172.17.0.4:3306)/visualization_api?parseTime=true
+  dir: /var/lib/platformvisibility/database-migrations/mysql

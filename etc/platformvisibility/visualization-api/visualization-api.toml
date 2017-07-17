@@ -1,0 +1,32 @@
+[openstack]
+# OpenStack Keystone endpoint
+auth_url="http://172.19.4.64:5000/v3"
+# User with admin role in order to call 'openstack server list --all-projects'
+username="platform-visibility"
+password="123"
+project_name="service"
+region="RegionOne"
+domain_name="default"
+endpoint_type="internal"
+
+[log]
+path = "/var/log/platformvisibility/visualization-api.log"
+level = "info"
+
+[mysql]
+host = "172.17.0.3"
+port = 3306
+username = "mysql"
+password = "password"
+database = "visualization_api"
+
+[grafana]
+url = "http://172.18.236.207:3000"
+username = "admin"
+password = "admin"
+
+[http_endpoint]
+# port visualization-api is listening on
+port = 9080
+# JWT secret. this parameter must be changed during application deployment
+jwt_secret = "secret"

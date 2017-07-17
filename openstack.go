@@ -4,7 +4,7 @@ import (
 	"github.com/gophercloud/gophercloud"
 	"github.com/gophercloud/gophercloud/openstack"
 	"github.com/gophercloud/gophercloud/openstack/identity/v3/tokens"
-	"github.com/kbhonagiri16/visualization"
+	"github.com/kbhonagiri16/visualization/logging"
 	"github.com/mitchellh/mapstructure"
 	"time"
 )
