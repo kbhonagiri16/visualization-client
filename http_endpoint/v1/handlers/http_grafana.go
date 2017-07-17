@@ -9,8 +9,8 @@ import (
 	"regexp"
 	"strconv"
 
-	"visualization/http_endpoint/common"
-	"visualization/logging"
+	"github.com/kbhonagiri16/visualization/http_endpoint/common"
+	"github.com/kbhonagiri16/visualization/logging"
 )
 
 var emailValid = regexp.MustCompile(`^[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,4}$`)
@@ -77,7 +77,7 @@ func helperCreateDatasource(clients *common.ClientContainer, handler common.Hand
 		switch err.(type) {
 		// grafanaclient.Exists means, that user provided details
 		// of user which already exists. We return 409
-		case grafanaclient.Exists:
+		case visualization.Exists:
 			errMsg := fmt.Sprintf("Datasource Exists")
 			common.WriteErrorToResponse(w, http.StatusConflict,
 				errMsg, err.Error())
@@ -112,7 +112,7 @@ func helperOrgUser(clients *common.ClientContainer, handler common.HandlerInterf
 		switch err.(type) {
 		// common.OrganizationNotFound  means, that user provided the
 		// ID of non existent user. We return 404
-		case grafanaclient.NotFound:
+		case visualization.NotFound:
 			errMsg := fmt.Sprintf("Organization Not Found")
 			common.WriteErrorToResponse(w, http.StatusNotFound,
 				errMsg, err.Error())
@@ -133,7 +133,7 @@ func helperOrgUser(clients *common.ClientContainer, handler common.HandlerInterf
 		switch err.(type) {
 		// grafanaclient.Exists means, that user provided
 		// user that already exists. We return 409
-		case grafanaclient.Exists:
+		case visualization.Exists:
 			errMsg := fmt.Sprintf("User Exists")
 			common.WriteErrorToResponse(w, http.StatusConflict,
 				errMsg, err.Error())
@@ -166,7 +166,7 @@ func helperCreateUser(clients *common.ClientContainer, handler common.HandlerInt
 		switch err.(type) {
 		// grafanaclient.Exists means, that user provided details
 		// of user which already exists. We return 409
-		case grafanaclient.Exists:
+		case visualization.Exists:
 			errMsg := fmt.Sprintf("User Exists")
 			common.WriteErrorToResponse(w, http.StatusConflict,
 				errMsg, err.Error())
@@ -216,7 +216,7 @@ func GetUsersID(clients *common.ClientContainer, handler common.HandlerInterface
 			switch err.(type) {
 			// grafanaclient.NotFound  means, that user provided the
 			// ID of non existent user. We return 404
-			case grafanaclient.NotFound:
+			case visualization.NotFound:
 				errMsg := fmt.Sprintf("User Not Found")
 				common.WriteErrorToResponse(w, http.StatusNotFound,
 					errMsg, err.Error())
@@ -252,7 +252,7 @@ func DeleteUser(clients *common.ClientContainer, handler common.HandlerInterface
 			switch err.(type) {
 			// grafanaclient.NotFound  means, that user provided the
 			// ID of non existent user. We return 404
-			case grafanaclient.NotFound:
+			case visualization.NotFound:
 				errMsg := fmt.Sprintf("User Not Found")
 				common.WriteErrorToResponse(w, http.StatusNotFound,
 					errMsg, err.Error())
@@ -355,7 +355,7 @@ func GetOrganizationID(clients *common.ClientContainer, handler common.HandlerIn
 			switch err.(type) {
 			// common.OrganizationNotFound  means, that user provided the
 			// ID of non existent user. We return 404
-			case grafanaclient.NotFound:
+			case visualization.NotFound:
 				errMsg := fmt.Sprintf("Organization Not Found")
 				common.WriteErrorToResponse(w, http.StatusNotFound,
 					errMsg, err.Error())
@@ -392,7 +392,7 @@ func DeleteOrganization(clients *common.ClientContainer, handler common.HandlerI
 			switch err.(type) {
 			// common.OrganizationNotFound  means, that user provided the
 			// ID of non existent user. We return 404
-			case grafanaclient.NotFound:
+			case visualization.NotFound:
 				errMsg := fmt.Sprintf("Organization Not Found")
 				common.WriteErrorToResponse(w, http.StatusNotFound,
 					errMsg, err.Error())
@@ -456,7 +456,7 @@ func CreateOrganization(clients *common.ClientContainer, handler common.HandlerI
 			switch err.(type) {
 			// grafanaclient.Exists means, that user provided
 			// organization already exists. We return 409
-			case grafanaclient.Exists:
+			case visualization.Exists:
 				errMsg := fmt.Sprintf("Organization Exists")
 				common.WriteErrorToResponse(w, http.StatusConflict,
 					errMsg, err.Error())
@@ -558,7 +558,7 @@ func DeleteOrganizationUser(clients *common.ClientContainer, handler common.Hand
 			switch err.(type) {
 			// grafanaclient.NotFound  means, that user provided the
 			// ID of non existent user. We return 404
-			case grafanaclient.NotFound:
+			case visualization.NotFound:
 				errMsg := fmt.Sprintf("User Not Found")
 				common.WriteErrorToResponse(w, http.StatusNotFound,
 					errMsg, err.Error())
@@ -578,7 +578,7 @@ func DeleteOrganizationUser(clients *common.ClientContainer, handler common.Hand
 			switch err.(type) {
 			// grafanaclient.NotFound  means, that user provided the
 			// ID of non existent organization. We return 404
-			case grafanaclient.NotFound:
+			case visualization.NotFound:
 				errMsg := fmt.Sprintf("Org Not Found")
 				common.WriteErrorToResponse(w, http.StatusNotFound,
 					errMsg, err.Error())
@@ -620,7 +620,7 @@ func GetOrganizationUser(clients *common.ClientContainer, handler common.Handler
 			switch err.(type) {
 			// common.OrganizationNotFound  means, that user provided the
 			// ID of non existent user. We return 404
-			case grafanaclient.NotFound:
+			case visualization.NotFound:
 				errMsg := fmt.Sprintf("Organization Not Found")
 				common.WriteErrorToResponse(w, http.StatusNotFound,
 					errMsg, err.Error())
@@ -677,7 +677,7 @@ func GetDatasourceID(clients *common.ClientContainer, handler common.HandlerInte
 			switch err.(type) {
 			// common.DatasourceNotFound  means, that user provided the
 			// ID of non existent user. We return 404
-			case grafanaclient.NotFound:
+			case visualization.NotFound:
 				errMsg := fmt.Sprintf("Datasource Not Found")
 				common.WriteErrorToResponse(w, http.StatusNotFound,
 					errMsg, err.Error())
@@ -714,7 +714,7 @@ func DeleteDatasource(clients *common.ClientContainer, handler common.HandlerInt
 			switch err.(type) {
 			// common.DatasourceNotFound  means, that user provided the
 			// ID of non existent user. We return 404
-			case grafanaclient.NotFound:
+			case visualization.NotFound:
 				errMsg := fmt.Sprintf("Datasource Not Found")
 				common.WriteErrorToResponse(w, http.StatusNotFound,
 					errMsg, err.Error())

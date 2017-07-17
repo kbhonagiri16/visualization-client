@@ -3,11 +3,11 @@ package testHelper
 import (
 	"fmt"
 	"github.com/golang/mock/gomock"
+	"github.com/kbhonagiri16/visualization/http_endpoint/authentication"
+	"github.com/kbhonagiri16/visualization/http_endpoint/common"
+	"github.com/kbhonagiri16/visualization/logging"
 	"net/http"
 	"time"
-	"visualization/http_endpoint/authentication"
-	"visualization/http_endpoint/common"
-	"visualization/logging"
 	"visualization/mock"
 )
 

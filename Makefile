@@ -23,15 +23,15 @@ init:
 	$(GO) get github.com/gophercloud/gophercloud
 	$(GO) get github.com/gophercloud/gophercloud/openstack
 	$(GO) get github.com/gophercloud/gophercloud/openstack/identity/v3/tokens
-	$(GO) get github.com/kbhonagiri16/visualization
 	$(GO) get github.com/mitchellh/mapstructure
 	$(GO) get github.com/golang/mock/gomock
 	$(GO) get github.com/golang/mock/mockgen
+	$(GO) get github.com/kbhonagiri16/visualization
 	$(GO) get github.com/xeipuuv/gojsonschema
 	$(GO) get github.com/satori/go.uuid
 	$(GO) get -u github.com/ulule/deepcopier
 	$(GO) get -u gopkg.in/alecthomas/gometalinter.v1
-	$(GO) get github.com/rubenv/sql-migrate/...
+	# $(GO) get github.com/rubenv/sql-migrate/...
 	GOPATH=$(GOPATH) $(GOPATH)/bin/gometalinter.v1 --install
 	# as soon as our application does not use relative imports - source code
 	# has to be present in GOPATH to make lint work

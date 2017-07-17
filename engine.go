@@ -1,12 +1,12 @@
-package db
+package visualization
 
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/kbhonagiri16/visualization/logging"
+	"github.com/kbhonagiri16/visualization/models"
 	"reflect"
 	"strings"
-	"visualization/logging"
-	"visualization/models"
 	// import mysql driver for side-effect required for xorm package
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/go-xorm/xorm"

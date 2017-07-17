@@ -5,8 +5,8 @@ import (
 	"github.com/pressly/chi"
 	"net/http"
 
-	"visualization/http_endpoint/common"
-	"visualization/http_endpoint/v1"
+	"github.com/kbhonagiri16/visualization/http_endpoint/common"
+	"github.com/kbhonagiri16/visualization/http_endpoint/v1"
 )
 
 const v1ApiPrefix = "/v1"

@@ -1,16 +1,16 @@
 package common
 
 import (
-	"github.com/visualization"
+	"github.com/kbhonagiri16/visualization"
 	"time"
 )
 
 /*ClientContainer represents container for storing different clients
 It was created to have mockable architecture*/
 type ClientContainer struct {
-	Openstack       openstack.ClientInterface
-	Grafana         grafanaclient.SessionInterface
-	DatabaseManager db.DatabaseManager
+	Openstack       visualization.ClientInterface
+	Grafana         visualization.SessionInterface
+	DatabaseManager visualization.DatabaseManager
 }
 
 /*HandlerInterface represents set of handlers for api
