@@ -4,10 +4,11 @@ import (
 	"bytes"
 	"fmt"
 	"github.com/kbhonagiri16/visualization"
+	"github.com/kbhonagiri16/visualization/http_endpoint/common"
+	"github.com/kbhonagiri16/visualization/logging"
+	"github.com/kbhonagiri16/visualization/models"
 	"github.com/ulule/deepcopier"
 	"text/template"
-	"visualization/http_endpoint/common"
-	"visualization/logging"
 )
 
 // V1Visualizations implements part of handler interface

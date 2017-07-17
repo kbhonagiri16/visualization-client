@@ -3,14 +3,14 @@ package v1handlers
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/kbhonagiri16/visualization/http_endpoint/common"
+	v1JsonSchema "github.com/kbhonagiri16/visualization/http_endpoint/v1/json_schemas"
+	"github.com/kbhonagiri16/visualization/logging"
 	"github.com/pressly/chi"
 	"github.com/satori/go.uuid"
 	"github.com/xeipuuv/gojsonschema"
 	"io/ioutil"
 	"net/http"
-	"visualization/http_endpoint/common"
-	v1JsonSchema "visualization/http_endpoint/v1/json_schemas"
-	"visualization/logging"
 )
 
 const visualizationNameParam = "name"

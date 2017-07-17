@@ -6,10 +6,10 @@ import (
 	"strconv"
 	"time"
 
-	"visualization/http_endpoint/authentication"
-	"visualization/http_endpoint/common"
-	v1handlers "visualization/http_endpoint/v1/handlers"
-	"visualization/logging"
+	"github.com/kbhonagiri16/visualization/http_endpoint/authentication"
+	"github.com/kbhonagiri16/visualization/http_endpoint/common"
+	v1handlers "github.com/kbhonagiri16/visualization/http_endpoint/v1/handlers"
+	"github.com/kbhonagiri16/visualization/logging"
 )
 
 // TokenIssueHours defines on how much hours our token would be issued
@@ -364,7 +364,7 @@ func (h *V1Handler) GetDatasourceID(clients *common.ClientContainer, ID int) ([]
 	}
 
 	var datasource struct {
-		ID            int    `json:ID"`
+		ID            int    `json:id"`
 		Name          string `json:"name"`
 		Type          string `json:"type"`
 		Configuration string `json:"configuration"`
