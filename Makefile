@@ -26,7 +26,7 @@ init:
 	$(GO) get github.com/mitchellh/mapstructure
 	$(GO) get github.com/golang/mock/gomock
 	$(GO) get github.com/golang/mock/mockgen
-	$(GO) get github.com/kbhonagiri16/visualization
+	$(GO) get github.com/kbhonagiri16/visualization-client
 	$(GO) get github.com/xeipuuv/gojsonschema
 	$(GO) get github.com/satori/go.uuid
 	$(GO) get -u github.com/ulule/deepcopier
@@ -53,9 +53,9 @@ lint:
 
 generate-mocks:
 	mkdir -p ./mock
-	GOPATH=$(GOPATH) $(GOPATH)/bin/mockgen -destination ./mock/mock.go visualization/ ClientInterface,DatabaseManager,SessionInterface
+	GOPATH=$(GOPATH) $(GOPATH)/bin/mockgen -destination ./mock/mock.go visualization-client/ ClientInterface,DatabaseManager,SessionInterface
 	mkdir -p ./http_endpoint/common/mock
-	GOPATH=$(GOPATH) $(GOPATH)/bin/mockgen -destination ./http_endpoint/common/mock/mock.go visualization/http_endpoint/common HandlerInterface,ClockInterface
+	GOPATH=$(GOPATH) $(GOPATH)/bin/mockgen -destination ./http_endpoint/common/mock/mock.go visualization-client/http_endpoint/common HandlerInterface,ClockInterface
 
 clean-mocks:
 	rm -r ./mock
@@ -69,7 +69,7 @@ test-integration:
 	sleep 10
 	curl -v -X POST -H "Content-Type: applciation/json" -d '{"name":"PV Service", "login":"pv_service", "password":"123123"}' http://admin:admin@localhost:3000/api/admin/users
 	curl -v -X PUT -H "Content-Type: applciation/json" -d '{"isGrafanaAdmin":true}' http://admin:admin@localhost:3000/api/admin/users/2/permissions
-	GRAFANA_URL=http://0.0.0.0:3000 GRAFANA_USER=pv_service GRAFANA_PASS=123123 $(GO) test -v visualization/ -tags=integration	
+	GRAFANA_URL=http://0.0.0.0:3000 GRAFANA_USER=pv_service GRAFANA_PASS=123123 $(GO) test -v visualization-client/ -tags=integration	
 	docker rm --force grafana-integration-test
 
 build: fmt lint
@@ -94,9 +94,9 @@ package-debug:
 	docker run -it -v $(PWD):/app com.mirantis.pv/build /bin/bash
 
 docker:
-	docker build -t $(DOCKER_USERNAME)/visualization-api -f tools/docker/visualization-api/Dockerfile .
+	docker build -t $(DOCKER_USERNAME)/visualization-client -f tools/docker/visualization-api/Dockerfile .
 
 docker-push:
-	docker push $(DOCKER_USERNAME)/visualization-api
+	docker push $(DOCKER_USERNAME)/visualization-client
 
 all: init fmt lint  build-all package-init package docker

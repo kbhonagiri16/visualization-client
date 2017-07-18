@@ -7,8 +7,8 @@ import (
 	"syscall"
 
 	flag "github.com/spf13/pflag"
-	"visualization-client"
 
+	"github.com/kbhonagiri16/visualization-client"
 	"github.com/kbhonagiri16/visualization-client/config"
 	"github.com/kbhonagiri16/visualization-client/http_endpoint"
 	"github.com/kbhonagiri16/visualization-client/http_endpoint/common"
