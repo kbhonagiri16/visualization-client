@@ -11,7 +11,6 @@ import (
 	"testing"
 
 	"github.com/golang/mock/gomock"
-	"github.com/kbhonagiri16/visualization"
 	"github.com/stretchr/testify/assert"
 
 	"github.com/kbhonagiri16/visualization/http_endpoint"
