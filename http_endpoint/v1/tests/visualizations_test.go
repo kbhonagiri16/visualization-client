@@ -12,13 +12,13 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
-
 	"github.com/kbhonagiri16/visualization/http_endpoint"
 	"github.com/kbhonagiri16/visualization/http_endpoint/common"
-	"github.com/kbhonagiri16/visualization/http_endpoint/common/mock"
 	"github.com/kbhonagiri16/visualization/http_endpoint/common/tests"
 	"github.com/kbhonagiri16/visualization/http_endpoint/v1/handlers"
 	"github.com/kbhonagiri16/visualization/models"
+	
+	"visualization/http_endpoint/common/mock"
 	"visualization/mock"
 )
 
