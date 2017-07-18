@@ -157,6 +157,7 @@ func (m *XORMManager) QueryVisualizationsDashboards(slug, name, organizationID s
 	return &result, nil
 }
 
+// GetVisualizationWithDashboardsBySlug returs visualization with all related dashboards
 func (m *XORMManager) GetVisualizationWithDashboardsBySlug(
 	slug, organizationID string) (*Visualization, []*Dashboard, error) {
 	// TODO(oshyman) fix lookup query
