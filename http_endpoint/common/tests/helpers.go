@@ -12,8 +12,6 @@ import (
 
 const tokenHeaderName = "Authorization"
 
-type nullWriter struct{}
-
 func (w nullWriter) Write(p []byte) (int, error) {
 	return len(p), nil
 }

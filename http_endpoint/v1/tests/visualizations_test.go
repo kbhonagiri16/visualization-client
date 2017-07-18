@@ -496,12 +496,12 @@ func TestVisualizationPostResponses(t *testing.T) {
 
 func TestVisualizationDashboardToResponse(t *testing.T) {
 	tests := []struct {
-		visualization *visualization_client.Visualization
-		dashboards    []*visualization_client.Dashboard
-		result        *common.VisualizationWithDashboards
+		visualizations *visualization_client.Visualization
+		dashboards     []*visualization_client.Dashboard
+		result         *common.VisualizationWithDashboards
 	}{
 		{
-			visualization: &visualization_client.Visualization{1, "visualization_slug", "visualization_name", "organization_id", "visualization_tags"},
+			visualizations: &visualization_client.Visualization{1, "visualization_slug", "visualization_name", "organization_id", "visualization_tags"},
 			dashboards: []*visualization_client.Dashboard{
 				&visualization_client.Dashboard{"id", 1, "dashboard_name", "rendered_template", "dashboard_slug"},
 			},
@@ -515,7 +515,7 @@ func TestVisualizationDashboardToResponse(t *testing.T) {
 	}
 
 	for _, testCase := range tests {
-		returnedResult := v1handlers.VisualizationDashboardToResponse(testCase.visualization, testCase.dashboards)
+		returnedResult := v1handlers.VisualizationDashboardToResponse(testCase.visualizations, testCase.dashboards)
 		assert.Equal(t, testCase.result, returnedResult,
 			"result must match")
 	}

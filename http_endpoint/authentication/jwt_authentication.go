@@ -34,7 +34,7 @@ func JWTTokenFromParams(secret string, isAdmin bool, projectID string,
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	result, err := token.SignedString([]byte(secret))
 	if err != nil {
-		fmt.Sprintf("Error signing JWTToken %s", err)
+		fmt.Printf("Error signing JWTToken %s", err)
 	}
 	return result, err
 }

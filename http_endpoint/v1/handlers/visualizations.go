@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"text/template"
 
+	"github.com/kbhonagiri16/visualization-client"
 	"github.com/kbhonagiri16/visualization-client/http_endpoint/common"
 	"github.com/ulule/deepcopier"
-	"visualization-client"
 )
 
 // V1Visualizations implements part of handler interface
@@ -175,21 +175,21 @@ func (h *V1Visualizations) VisualizationsPost(clients *common.ClientContainer,
 				updateErrorDB := clients.DatabaseManager.BulkUpdateDashboard(
 					updateDashboardsDB)
 				if updateErrorDB != nil {
-					fmt.Sprintf("Error during cleanup on grafana upload"+
+					fmt.Printf("Error during cleanup on grafana upload"+
 						" error '%s'. Unable to update db entities of dashboards"+
 						" with slugs of corresponding grafana dashboards for"+
 						"dashboards not deleted from grafana '%s'",
 						grafanaUploadErr, updateErrorDB)
 				}
-				fmt.Sprintf("Deleting db dashboards that are not uploaded" +
+				fmt.Printf("Deleting db dashboards that are not uploaded" +
 					" to grafana")
 				deletionErrorDB := clients.DatabaseManager.BulkDeleteDashboard(
 					deleteDashboardsDB)
 				if deletionErrorDB != nil {
-					fmt.Sprintf("due to failed deletion operation - extend" +
+					fmt.Printf("due to failed deletion operation - extend" +
 						" the slice of returned dashboards to user")
 					dashboardsToReturn = append(dashboardsToReturn, deleteDashboardsDB...)
-					fmt.Sprintf("Error during cleanup on grafana upload"+
+					fmt.Printf("Error during cleanup on grafana upload"+
 						" error '%s'. Unable to delete entities of grafana "+
 						"dashboards deleted from grafana '%s'",
 						grafanaUploadErr, updateErrorDB)
@@ -199,13 +199,13 @@ func (h *V1Visualizations) VisualizationsPost(clients *common.ClientContainer,
 				return result, common.NewClientError(
 					"Unable to create new grafana dashboards, and remove old ones")
 			}
-			fmt.Sprintf("trying to delete visualization with " +
+			fmt.Printf("trying to delete visualization with " +
 				"corresponding dashboards from database. dashboards have no " +
 				"matching grafana uploads")
 			visualizationDeletionErr := clients.DatabaseManager.DeleteVisualization(
 				visualizationDB)
 			if visualizationDeletionErr != nil {
-				fmt.Sprintf("Unable to delete visualization entry " +
+				fmt.Printf("Unable to delete visualization entry " +
 					"from db with corresponding dashboards entries. " +
 					"all entries are returned to user")
 				result := VisualizationDashboardToResponse(
@@ -213,24 +213,24 @@ func (h *V1Visualizations) VisualizationsPost(clients *common.ClientContainer,
 				return result, common.NewClientError(
 					"Unable to create new grafana dashboards, and remove old ones")
 			}
-			fmt.Sprintf("All created data was deleted both from grafana " +
+			fmt.Printf("All created data was deleted both from grafana " +
 				"and from database without errors. original grafana error is returned")
 			return nil, grafanaUploadErr
 		}
-		fmt.Sprintf("Created dashboard named '%s'", slug)
+		fmt.Printf("Created dashboard named '%s'", slug)
 		uploadedGrafanaSlugs = append(uploadedGrafanaSlugs, slug)
 	}
-	fmt.Sprintf("Uploaded dashboard data to grafana")
+	fmt.Printf("Uploaded dashboard data to grafana")
 
 	// Positive outcome. All dashboards were created both in db and grafana
 	for index := range dashboardsDB {
 		dashboardsDB[index].Slug = uploadedGrafanaSlugs[index]
 	}
-	fmt.Sprintf("Updating db entries of dashboards with corresponding" +
+	fmt.Printf("Updating db entries of dashboards with corresponding" +
 		" grafana slugs")
 	updateErrorDB := clients.DatabaseManager.BulkUpdateDashboard(dashboardsDB)
 	if updateErrorDB != nil {
-		fmt.Sprintf("Error updating db dashboard slugs '%s'", updateErrorDB)
+		fmt.Printf("Error updating db dashboard slugs '%s'", updateErrorDB)
 		return nil, err
 	}
 
@@ -241,18 +241,18 @@ func (h *V1Visualizations) VisualizationsPost(clients *common.ClientContainer,
 func (h *V1Visualizations) VisualizationDelete(clients *common.ClientContainer,
 	organizationID, visualizationSlug string) (
 	*common.VisualizationWithDashboards, error) {
-	fmt.Sprintf("getting data from db matching provided string")
+	fmt.Printf("getting data from db matching provided string")
 	visualizationDB, dashboardsDB, err := clients.DatabaseManager.GetVisualizationWithDashboardsBySlug(
 		visualizationSlug, organizationID)
-	fmt.Sprintf("got data from db matching provided string")
+	fmt.Printf("got data from db matching provided string")
 
 	if err != nil {
-		fmt.Sprintf("Error getting data from db: '%s'", err)
+		fmt.Printf("Error getting data from db: '%s'", err)
 		return nil, err
 	}
 
 	if visualizationDB == nil {
-		fmt.Sprintf("User requested visualization '%s' not found in db", visualizationSlug)
+		fmt.Printf("User requested visualization '%s' not found in db", visualizationSlug)
 		return nil, common.NewUserDataError("No visualizations found")
 	}
 
@@ -264,7 +264,7 @@ func (h *V1Visualizations) VisualizationDelete(clients *common.ClientContainer,
 			removedDashboardsFromGrafana = append(removedDashboardsFromGrafana,
 				dashboardsDB[index])
 		} else {
-			fmt.Sprintf("Removing grafana dashboard '%s'", dashboardDB.Slug)
+			fmt.Printf("Removing grafana dashboard '%s'", dashboardDB.Slug)
 			err = clients.Grafana.DeleteDashboard(dashboardDB.Slug, organizationID)
 			if err != nil {
 				failedToRemoveDashboardsFromGrafana = append(
@@ -277,23 +277,23 @@ func (h *V1Visualizations) VisualizationDelete(clients *common.ClientContainer,
 	}
 
 	if len(failedToRemoveDashboardsFromGrafana) != 0 {
-		fmt.Sprintf("Deleting dashboards from db")
+		fmt.Printf("Deleting dashboards from db")
 		deletionError := clients.DatabaseManager.BulkDeleteDashboard(
 			removedDashboardsFromGrafana)
 		if deletionError != nil {
 			fmt.Println(deletionError)
 		}
-		fmt.Sprintf("Deleted dashboards from db")
+		fmt.Printf("Deleted dashboards from db")
 
 		result := VisualizationDashboardToResponse(visualizationDB,
 			failedToRemoveDashboardsFromGrafana)
 		return result, common.NewClientError("failed to remove data from grafana")
 	}
-	fmt.Sprintf("removing visualization '%s' from db", visualizationSlug)
+	fmt.Printf("removing visualization '%s' from db", visualizationSlug)
 	err = clients.DatabaseManager.DeleteVisualization(visualizationDB)
 	if err != nil {
 		fmt.Println(err)
 	}
-	fmt.Sprintf("removed visualization '%s' from db", visualizationSlug)
+	fmt.Printf("removed visualization '%s' from db", visualizationSlug)
 	return VisualizationDashboardToResponse(visualizationDB, dashboardsDB), nil
 }

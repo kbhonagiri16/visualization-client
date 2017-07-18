@@ -8,7 +8,6 @@ import (
 
 	"github.com/kbhonagiri16/visualization-client/http_endpoint/common"
 	v1JsonSchema "github.com/kbhonagiri16/visualization-client/http_endpoint/v1/json_schemas"
-	"github.com/kbhonagiri16/visualization-client/logging"
 	"github.com/pressly/chi"
 	"github.com/satori/go.uuid"
 	"github.com/xeipuuv/gojsonschema"
@@ -40,17 +39,12 @@ func VisualizationsGet(clients *common.ClientContainer,
 			}
 		}
 
-		log.Logger.Debugf("%s call with query parameters: name='%s', tags='%s'",
-			r.URL.Path, name, tags)
-
 		result, err := handler.VisualizationsGet(clients, organizationID,
 			name, tags)
 		if err != nil {
 			common.WriteErrorToResponse(w, http.StatusInternalServerError,
 				http.StatusText(http.StatusInternalServerError),
 				"Internal server error occured")
-			log.Logger.Errorf("Error %s occured on handler func while"+
-				"querying visualizations", err.Error())
 		} else {
 			serializedResult, serializationError := json.Marshal(result)
 			if serializationError != nil {
@@ -130,7 +124,6 @@ func VisualizationsPost(clients *common.ClientContainer,
 			encodedResult = serializedResult
 		}
 		if err != nil {
-			log.Logger.Error(err)
 
 			switch err.(type) {
 			case common.UserDataError:
