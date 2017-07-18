@@ -71,10 +71,12 @@ type Exists struct{}
 // NotFound Error
 type NotFound struct{}
 
+// Error for name taken
 func (e Exists) Error() string {
 	return "name taken"
 }
 
+// Error for not found
 func (e NotFound) Error() string {
 	return "not found"
 }
