@@ -11,10 +11,10 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"visualization/http_endpoint"
-	"visualization/http_endpoint/common/mock"
-	"visualization/http_endpoint/common/tests"
-	"visualization/http_endpoint/v1"
+	"github.com/kbhonagiri16/visualization/http_endpoint"
+	"github.com/kbhonagiri16/visualization/http_endpoint/common/mock"
+	"github.com/kbhonagiri16/visualization/http_endpoint/common/tests"
+	"github.com/kbhonagiri16/visualization/http_endpoint/v1"
 	"visualization/mock"
 )
 
@@ -144,7 +144,7 @@ func TestGrafanaUsersCreateHttp(t *testing.T) {
 		projectID        string
 		provideAuthToken bool
 		expectedCode     int
-		input            grafanaclient.AdminCreateUser
+		input            visualization.AdminCreateUser
 		errorInput       bool
 	}{
 		{
@@ -154,7 +154,7 @@ func TestGrafanaUsersCreateHttp(t *testing.T) {
 			projectID:        "project1",
 			expectedCode:     200,
 			errorInput:       false,
-			input:            grafanaclient.AdminCreateUser{Name: "admin", Login: "admin", Email: "admin@localhost.com", Password: "password"},
+			input:            visualization.AdminCreateUser{Name: "admin", Login: "admin", Email: "admin@localhost.com", Password: "password"},
 		},
 		{
 			description:      "missing Name and Email",
@@ -163,7 +163,7 @@ func TestGrafanaUsersCreateHttp(t *testing.T) {
 			projectID:        "project1",
 			errorInput:       true,
 			expectedCode:     500,
-			input:            grafanaclient.AdminCreateUser{Login: "admin", Password: "password"},
+			input:            visualization.AdminCreateUser{Login: "admin", Password: "password"},
 		},
 		{
 
@@ -392,7 +392,7 @@ func TestGrafanaOrganizationCreateHttp(t *testing.T) {
 		provideAuthToken bool
 		expectedCode     int
 		errorInput       bool
-		input            grafanaclient.Org
+		input            visualization.Org
 	}{
 		{
 			description:      "make sure that handler reacts",
@@ -401,7 +401,7 @@ func TestGrafanaOrganizationCreateHttp(t *testing.T) {
 			projectID:        "project1",
 			expectedCode:     200,
 			errorInput:       false,
-			input:            grafanaclient.Org{Name: "org1"},
+			input:            visualization.Org{Name: "org1"},
 		},
 		{
 			description:      "missing Name from parameters",
@@ -410,7 +410,7 @@ func TestGrafanaOrganizationCreateHttp(t *testing.T) {
 			projectID:        "project1",
 			expectedCode:     500,
 			errorInput:       true,
-			input:            grafanaclient.Org{},
+			input:            visualization.Org{},
 		},
 		{
 
@@ -669,12 +669,12 @@ func TestGrafanaDeleteOrganizationUserHttp(t *testing.T) {
 func TestGrafanaUserGet(t *testing.T) {
 	tests := []struct {
 		description    string
-		expectedResult []grafanaclient.User
+		expectedResult []visualization.User
 		output         []byte
 	}{
 		{
 			description:    "Response Check",
-			expectedResult: []grafanaclient.User{grafanaclient.User{ID: 1, Name: "", Login: "admin", Email: "admin@localhost"}},
+			expectedResult: []visualization.User{visualization.User{ID: 1, Name: "", Login: "admin", Email: "admin@localhost"}},
 			output:         []byte(`[{"userID":"1","name":"","login":"admin","email":"admin@localhost"}]`),
 		},
 	}
@@ -698,12 +698,12 @@ func TestGrafanaUserGet(t *testing.T) {
 func TestGrafanaUserGetID(t *testing.T) {
 	tests := []struct {
 		description    string
-		expectedResult grafanaclient.User
+		expectedResult visualization.User
 		output         []byte
 	}{
 		{
 			description:    "Response Check",
-			expectedResult: grafanaclient.User{ID: 1, Name: "", Login: "admin", Email: "admin@localhost"},
+			expectedResult: visualization.User{ID: 1, Name: "", Login: "admin", Email: "admin@localhost"},
 			output:         []byte(`{"userID":"1","name":"","login":"admin","email":"admin@localhost"}`),
 		},
 	}
@@ -728,12 +728,12 @@ func TestGrafanaUserGetID(t *testing.T) {
 func TestGrafanaUserCreate(t *testing.T) {
 	tests := []struct {
 		description string
-		input       grafanaclient.AdminCreateUser
+		input       visualization.AdminCreateUser
 		params      []byte
 	}{
 		{
 			description: "Response Check",
-			input:       grafanaclient.AdminCreateUser{Name: "admin", Login: "admin", Email: "admin@localhost.com", Password: "password"},
+			input:       visualization.AdminCreateUser{Name: "admin", Login: "admin", Email: "admin@localhost.com", Password: "password"},
 			params:      []byte(`{"Name":"admin","Email":"admin@localhost.com","Login":"admin","Password":"password"}`),
 		},
 	}
@@ -783,12 +783,12 @@ func TestGrafanaUserDelete(t *testing.T) {
 func TestGrafanaOrganizationGet(t *testing.T) {
 	tests := []struct {
 		description    string
-		expectedResult []grafanaclient.OrgList
+		expectedResult []visualization.OrgList
 		output         []byte
 	}{
 		{
 			description:    "Response Check",
-			expectedResult: []grafanaclient.OrgList{grafanaclient.OrgList{ID: 1, Name: "Main Org."}},
+			expectedResult: []visualization.OrgList{visualization.OrgList{ID: 1, Name: "Main Org."}},
 			output:         []byte(`[{"name":"Main Org.","organizationID":"1"}]`),
 		},
 	}
@@ -813,12 +813,12 @@ func TestGrafanaOrganizationGet(t *testing.T) {
 func TestGrafanaOrganizationGetID(t *testing.T) {
 	tests := []struct {
 		description    string
-		expectedResult grafanaclient.OrgList
+		expectedResult visualization.OrgList
 		output         []byte
 	}{
 		{
 			description:    "Response Check",
-			expectedResult: grafanaclient.OrgList{ID: 1, Name: "Main Org."},
+			expectedResult: visualization.OrgList{ID: 1, Name: "Main Org."},
 			output:         []byte(`{"organizationID":1,"name":"Main Org."}`),
 		},
 	}
@@ -843,12 +843,12 @@ func TestGrafanaOrganizationGetID(t *testing.T) {
 func TestGrafanaOrganizationCreate(t *testing.T) {
 	tests := []struct {
 		description string
-		input       grafanaclient.Org
+		input       visualization.Org
 		params      []byte
 	}{
 		{
 			description: "Response Check",
-			input:       grafanaclient.Org{Name: "org1"},
+			input:       visualization.Org{Name: "org1"},
 			params:      []byte(`{"Name":"org1"}`),
 		},
 	}
@@ -898,12 +898,12 @@ func TestGrafanaOrgDelete(t *testing.T) {
 func TestGrafanaOrgUserGet(t *testing.T) {
 	tests := []struct {
 		description    string
-		expectedResult []grafanaclient.OrgUserList
+		expectedResult []visualization.OrgUserList
 		output         []byte
 	}{
 		{
 			description:    "Response Check",
-			expectedResult: []grafanaclient.OrgUserList{grafanaclient.OrgUserList{OrgID: 1, UserID: 1, Login: "admin", Role: "Viewer"}},
+			expectedResult: []visualization.OrgUserList{visualization.OrgUserList{OrgID: 1, UserID: 1, Login: "admin", Role: "Viewer"}},
 			output:         []byte(`[{"organizationID":"1","userID":"1","login":"admin","role":"Viewer","email":""}]`),
 		},
 	}
@@ -928,12 +928,12 @@ func TestGrafanaOrgUserGet(t *testing.T) {
 func TestGrafanaOrgUserCreate(t *testing.T) {
 	tests := []struct {
 		description string
-		input       grafanaclient.CreateOrganizationUser
+		input       visualization.CreateOrganizationUser
 		params      []byte
 	}{
 		{
 			description: "Response Check",
-			input:       grafanaclient.CreateOrganizationUser{Name: "admin", Login: "admin", Email: "admin@localhost.com", Password: "password", Role: "Viewer"},
+			input:       visualization.CreateOrganizationUser{Name: "admin", Login: "admin", Email: "admin@localhost.com", Password: "password", Role: "Viewer"},
 			params:      []byte(`{"Name": "admin", "Login": "admin", "Email": "admin@localhost.com", "Password": "password", "Role": "Viewer"}`),
 		},
 	}
