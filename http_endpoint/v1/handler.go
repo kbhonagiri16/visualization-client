@@ -365,7 +365,7 @@ func (h *V1Handler) GetDatasourceID(clients *common.ClientContainer, ID int) ([]
 	}
 
 	var datasource struct {
-		ID            int    `json:id"`
+		ID            int    `json:"ID"`
 		Name          string `json:"name"`
 		Type          string `json:"type"`
 		Configuration string `json:"configuration"`
