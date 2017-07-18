@@ -5,18 +5,18 @@ import (
 	"fmt"
 	"text/template"
 
-	"github.com/kbhonagiri16/visualization-client"
 	"github.com/kbhonagiri16/visualization-client/http_endpoint/common"
 	"github.com/kbhonagiri16/visualization-client/logging"
 	"github.com/ulule/deepcopier"
+	"visualization-client"
 )
 
 // V1Visualizations implements part of handler interface
 type V1Visualizations struct{}
 
 // VisualizationDashboardToResponse transforms models to response format
-func VisualizationDashboardToResponse(visualization *models.Visualization,
-	dashboards []*models.Dashboard) *common.VisualizationWithDashboards {
+func VisualizationDashboardToResponse(visualization *visualization.Visualization,
+	dashboards []*visualization.Dashboard) *common.VisualizationWithDashboards {
 	// This function is used, when we have to return visualization with
 	// limited number of dashboards (for example in post method)
 	log.Logger.Debug("rendering data to user")
@@ -34,7 +34,7 @@ func VisualizationDashboardToResponse(visualization *models.Visualization,
 
 // GroupedVisualizationDashboardToResponse transforms map of visualizations to response format
 func GroupedVisualizationDashboardToResponse(
-	data *map[models.Visualization][]*models.Dashboard) *[]common.VisualizationWithDashboards {
+	data *map[visualization.Visualization][]*visualization.Dashboard) *[]common.VisualizationWithDashboards {
 	// This function is used, when
 
 	log.Logger.Debug("rendering data to user")
@@ -164,8 +164,8 @@ func (h *V1Visualizations) VisualizationsPost(clients *common.ClientContainer,
 				" dashboards, matching the same visualization, would be deleted",
 				grafanaUploadErr)
 
-			updateDashboardsDB := []*models.Dashboard{}
-			deleteDashboardsDB := []*models.Dashboard{}
+			updateDashboardsDB := []*visualization.Dashboard{}
+			deleteDashboardsDB := []*visualization.Dashboard{}
 			for index, slugToDelete := range uploadedGrafanaSlugs {
 				grafanaDeletionErr := clients.Grafana.DeleteDashboard(slugToDelete, organizationID)
 				// if already created dashboard was failed to delete -
@@ -189,7 +189,7 @@ func (h *V1Visualizations) VisualizationsPost(clients *common.ClientContainer,
 			deleteDashboardsDB = append(deleteDashboardsDB,
 				dashboardsDB[len(uploadedGrafanaSlugs):]...)
 			if len(updateDashboardsDB) > 0 {
-				dashboardsToReturn := []*models.Dashboard{}
+				dashboardsToReturn := []*visualization.Dashboard{}
 				dashboardsToReturn = append(dashboardsToReturn, updateDashboardsDB...)
 				log.Logger.Debug("Updating db dashboards with grafana slugs")
 				updateErrorDB := clients.DatabaseManager.BulkUpdateDashboard(
@@ -276,8 +276,8 @@ func (h *V1Visualizations) VisualizationDelete(clients *common.ClientContainer,
 		return nil, common.NewUserDataError("No visualizations found")
 	}
 
-	removedDashboardsFromGrafana := []*models.Dashboard{}
-	failedToRemoveDashboardsFromGrafana := []*models.Dashboard{}
+	removedDashboardsFromGrafana := []*visualization.Dashboard{}
+	failedToRemoveDashboardsFromGrafana := []*visualization.Dashboard{}
 	for index, dashboardDB := range dashboardsDB {
 		if dashboardDB.Slug == "" {
 			// in case grafana slug is empty - just remove dashboard from db

@@ -11,13 +11,13 @@ import (
 	"testing"
 
 	"github.com/golang/mock/gomock"
+	"github.com/kbhonagiri16/visualization-client"
+	"github.com/kbhonagiri16/visualization-client/http_endpoint"
+	"github.com/kbhonagiri16/visualization-client/http_endpoint/common"
+	"github.com/kbhonagiri16/visualization-client/http_endpoint/common/tests"
+	"github.com/kbhonagiri16/visualization-client/http_endpoint/v1/handlers"
 	"github.com/stretchr/testify/assert"
-	"github.com/kbhonagiri16/visualization/http_endpoint"
-	"github.com/kbhonagiri16/visualization/http_endpoint/common"
-	"github.com/kbhonagiri16/visualization/http_endpoint/common/tests"
-	"github.com/kbhonagiri16/visualization/http_endpoint/v1/handlers"
-	"github.com/kbhonagiri16/visualization/models"
-	
+
 	"visualization/http_endpoint/common/mock"
 	"visualization/mock"
 )
@@ -501,14 +501,14 @@ func TestVisualizationPostResponses(t *testing.T) {
 
 func TestVisualizationDashboardToResponse(t *testing.T) {
 	tests := []struct {
-		visualization *models.Visualization
-		dashboards    []*models.Dashboard
+		visualization *visualization.Visualization
+		dashboards    []*visualization.Dashboard
 		result        *common.VisualizationWithDashboards
 	}{
 		{
-			visualization: &models.Visualization{1, "visualization_slug", "visualization_name", "organization_id", "visualization_tags"},
-			dashboards: []*models.Dashboard{
-				&models.Dashboard{"id", 1, "dashboard_name", "rendered_template", "dashboard_slug"},
+			visualization: &visualization.Visualization{1, "visualization_slug", "visualization_name", "organization_id", "visualization_tags"},
+			dashboards: []*visualization.Dashboard{
+				&visualization.Dashboard{"id", 1, "dashboard_name", "rendered_template", "dashboard_slug"},
 			},
 			result: &common.VisualizationWithDashboards{
 				&common.VisualizationResponseEntry{"visualization_slug", "visualization_name", "visualization_tags"},
@@ -529,13 +529,13 @@ func TestVisualizationDashboardToResponse(t *testing.T) {
 
 func TestGroupedVisualizationDashboardToResponse(t *testing.T) {
 	tests := []struct {
-		inputDataMap *map[models.Visualization][]*models.Dashboard
+		inputDataMap *map[visualization.Visualization][]*visualization.Dashboard
 		result       *[]common.VisualizationWithDashboards
 	}{
 		{
-			inputDataMap: &map[models.Visualization][]*models.Dashboard{
-				models.Visualization{1, "visualization_slug", "visualization_name", "organization_id", "visualization_tags"}: []*models.Dashboard{
-					&models.Dashboard{"id", 1, "dashboard_name", "rendered_template", "dashboard_slug"}},
+			inputDataMap: &map[visualization.Visualization][]*visualization.Dashboard{
+				visualization.Visualization{1, "visualization_slug", "visualization_name", "organization_id", "visualization_tags"}: []*visualization.Dashboard{
+					&visualization.Dashboard{"id", 1, "dashboard_name", "rendered_template", "dashboard_slug"}},
 			},
 			result: &[]common.VisualizationWithDashboards{
 				common.VisualizationWithDashboards{
@@ -558,16 +558,16 @@ func TestGroupedVisualizationDashboardToResponse(t *testing.T) {
 
 func TestVisualizationsGetHandler(t *testing.T) {
 	tests := []struct {
-		dbData        *map[models.Visualization][]*models.Dashboard
+		dbData        *map[visualization.Visualization][]*visualization.Dashboard
 		result        *[]common.VisualizationWithDashboards
 		name          string
 		tags          map[string]interface{}
 		expectDBError bool
 	}{
 		{
-			dbData: &map[models.Visualization][]*models.Dashboard{
-				models.Visualization{1, "visualization_slug", "visualization_name", "organization_id", "visualization_tags"}: []*models.Dashboard{
-					&models.Dashboard{"id", 1, "dashboard_name", "rendered_template", "dashboard_slug"}},
+			dbData: &map[visualization.Visualization][]*visualization.Dashboard{
+				visualization.Visualization{1, "visualization_slug", "visualization_name", "organization_id", "visualization_tags"}: []*visualization.Dashboard{
+					&visualization.Dashboard{"id", 1, "dashboard_name", "rendered_template", "dashboard_slug"}},
 			},
 			result: &[]common.VisualizationWithDashboards{
 				common.VisualizationWithDashboards{
@@ -581,9 +581,9 @@ func TestVisualizationsGetHandler(t *testing.T) {
 			expectDBError: false,
 		},
 		{
-			dbData: &map[models.Visualization][]*models.Dashboard{
-				models.Visualization{1, "visualization_slug", "visualization_name", "organization_id", "visualization_tags"}: []*models.Dashboard{
-					&models.Dashboard{"id", 1, "dashboard_name", "rendered_template", "dashboard_slug"}},
+			dbData: &map[visualization.Visualization][]*visualization.Dashboard{
+				visualization.Visualization{1, "visualization_slug", "visualization_name", "organization_id", "visualization_tags"}: []*visualization.Dashboard{
+					&visualization.Dashboard{"id", 1, "dashboard_name", "rendered_template", "dashboard_slug"}},
 			},
 			result: &[]common.VisualizationWithDashboards{
 				common.VisualizationWithDashboards{
@@ -624,16 +624,16 @@ func TestVisualizationsGetHandler(t *testing.T) {
 
 func TestVisualizationsDeleteHandler(t *testing.T) {
 	tests := []struct {
-		databaseVisualization *models.Visualization
-		databaseDashboards    []*models.Dashboard
+		databaseVisualization *visualization.Visualization
+		databaseDashboards    []*visualization.Dashboard
 		result                *common.VisualizationWithDashboards
 		visualizationSlug     string
 		slugFoundInDB         bool
 	}{
 		{
-			databaseVisualization: &models.Visualization{1, "visualization_slug", "visualization_name", "organization_id", "visualization_tags"},
-			databaseDashboards: []*models.Dashboard{
-				&models.Dashboard{"id", 1, "dashboard_name", "rendered_template", "dashboard_slug"},
+			databaseVisualization: &visualization.Visualization{1, "visualization_slug", "visualization_name", "organization_id", "visualization_tags"},
+			databaseDashboards: []*visualization.Dashboard{
+				&visualization.Dashboard{"id", 1, "dashboard_name", "rendered_template", "dashboard_slug"},
 			},
 			result: &common.VisualizationWithDashboards{
 				&common.VisualizationResponseEntry{"visualization_slug", "visualization_name", "visualization_tags"},

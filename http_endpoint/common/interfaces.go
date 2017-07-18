@@ -1,8 +1,8 @@
 package common
 
 import (
-	"github.com/kbhonagiri16/visualization-client"
 	"time"
+	"visualization-client"
 )
 
 /*ClientContainer represents container for storing different clients
