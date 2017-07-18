@@ -9,8 +9,8 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
-	"visualization-client"
 
+	"github.com/kbhonagiri16/visualization-client"
 	"github.com/kbhonagiri16/visualization-client/http_endpoint"
 	"github.com/kbhonagiri16/visualization-client/http_endpoint/common/mock"
 	"github.com/kbhonagiri16/visualization-client/http_endpoint/common/tests"
