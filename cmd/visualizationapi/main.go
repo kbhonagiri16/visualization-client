@@ -88,7 +88,7 @@ func main() {
 	log.InitializeLogger(logRotate, CONF.ConsoleDebug, CONF.LogLevel)
 
 	// initialize database connection
-	databaseInitializationError := db.InitializeEngine(
+	databaseInitializationError := visualization.InitializeEngine(
 		CONF.MysqlUsername,
 		CONF.MysqlPassword,
 		CONF.MysqlHost,
@@ -100,7 +100,7 @@ func main() {
 	}
 
 	// initialize grafana session
-	grafanaSession, grafanaInitializationError := grafanaclient.NewSession(
+	grafanaSession, grafanaInitializationError := visualization.NewSession(
 		CONF.GrafanaUsername,
 		CONF.GrafanaPassword,
 		CONF.GrafanaURL,
@@ -109,7 +109,7 @@ func main() {
 		exitWithError(grafanaInitializationError, "grafana session error")
 	}
 
-	openstackCli, errorInitializingOpenstackCli := openstack.NewOpenstackClient(
+	openstackCli, errorInitializingOpenstackCli := visualization.NewOpenstackClient(
 		CONF.OpenstackAuthURL,
 		CONF.OpenstackUsername,
 		CONF.OpenstackPassword,
@@ -125,7 +125,7 @@ func main() {
 	errorInitializingAPI := endpoint.Serve(
 		CONF.JWTSecret,
 		CONF.HTTPPort,
-		&common.ClientContainer{openstackCli, grafanaSession, db.NewXORMManager()},
+		&common.ClientContainer{openstackCli, grafanaSession, visualization.NewXORMManager()},
 	)
 	if errorInitializingAPI != nil {
 		exitWithError(errorInitializingAPI)
