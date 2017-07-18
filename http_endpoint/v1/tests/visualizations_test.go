@@ -19,8 +19,8 @@ import (
 	"github.com/kbhonagiri16/visualization/http_endpoint/common/mock"
 	"github.com/kbhonagiri16/visualization/http_endpoint/common/tests"
 	"github.com/kbhonagiri16/visualization/http_endpoint/v1/handlers"
+	"github.com/kbhonagiri16/visualization/models"
 	"visualization/mock"
-	"visualization/models"
 )
 
 func TestVisualizationsGetTagsAndName(t *testing.T) {
