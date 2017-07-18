@@ -7,8 +7,8 @@ import (
 	"os"
 	"testing"
 
+	"github.com/kbhonagiri16/visualization-client"
 	"github.com/stretchr/testify/assert"
-	"github.com/kbhonagiri16/visualization"
 )
 
 var ds = visualization.DataSource{Name: "testme",

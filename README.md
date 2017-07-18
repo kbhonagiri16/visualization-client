@@ -12,4 +12,4 @@ The swagger (OAS) definition could be found [here](doc/visualization-api.md)
 Import project
 ----------------------
 
-go get github.com/kbhonagiri16/visualization
+go get github.com/kbhonagiri16/visualization-client
