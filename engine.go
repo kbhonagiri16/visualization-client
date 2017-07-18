@@ -6,6 +6,7 @@ import (
 	"reflect"
 	"strings"
 
+	// import mysql driver for side-effect required for xorm package
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/go-xorm/xorm"
 	"github.com/kbhonagiri16/visualization-client/logging"

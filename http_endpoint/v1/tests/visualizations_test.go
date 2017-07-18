@@ -11,12 +11,12 @@ import (
 	"testing"
 
 	"github.com/golang/mock/gomock"
-	"github.com/kbhonagiri16/visualization-client"
 	"github.com/kbhonagiri16/visualization-client/http_endpoint"
 	"github.com/kbhonagiri16/visualization-client/http_endpoint/common"
 	"github.com/kbhonagiri16/visualization-client/http_endpoint/common/tests"
 	"github.com/kbhonagiri16/visualization-client/http_endpoint/v1/handlers"
 	"github.com/stretchr/testify/assert"
+	"visualization-client"
 
 	"visualization/http_endpoint/common/mock"
 	"visualization/mock"
