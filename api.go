@@ -11,7 +11,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// It's using Grafana 4.0 REST API.Grafanaclient provide a simple API to manage Grafana 4.0 in Go.
+// GrafanClient It's using Grafana 4.0 REST API.
 // Credits https://github.com/adejoux/grafanaclient Alain Dejoux <adejoux@djouxtech.net>.
 package visualization
 
