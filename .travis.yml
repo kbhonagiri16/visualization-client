@@ -1,18 +1,28 @@
 language: go
 go:
-  - 1.7.5
-  - 1.8
-  - tip
+  - 1.7.x
 
 os:
   - linux
 
-matrix:
-  allow_failures:
-    - go: tip
-  fast_finish: true
+services:
+  - docker
+
+before_install:
+  - make init
 
 script:
-  - make all
+  - make stylecheck
+  - make lint
+  - make test
+  - make build-all
+  - make test-integration
+  - make package-init
+  - make package
+  - make docker
 
-sudo: false
+after_success:
+  - if [ "$TRAVIS_BRANCH" == "master" ]; then
+    docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
+    make docker-push;
+    fi

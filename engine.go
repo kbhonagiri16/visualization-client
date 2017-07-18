@@ -6,9 +6,9 @@ import (
 	"reflect"
 	"strings"
 
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/go-xorm/xorm"
 	"github.com/kbhonagiri16/visualization-client/logging"
-	//_ "github.com/kbhonagiri16/visualization-client/models"
 	"github.com/satori/go.uuid"
 )
 

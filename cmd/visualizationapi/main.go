@@ -6,13 +6,13 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/kbhonagiri16/visualization"
 	flag "github.com/spf13/pflag"
+	"visualization-client"
 
-	"github.com/kbhonagiri16/visualization/config"
-	"github.com/kbhonagiri16/visualization/http_endpoint"
-	"github.com/kbhonagiri16/visualization/http_endpoint/common"
-	"github.com/kbhonagiri16/visualization/logging"
+	"github.com/kbhonagiri16/visualization-client/config"
+	"github.com/kbhonagiri16/visualization-client/http_endpoint"
+	"github.com/kbhonagiri16/visualization-client/http_endpoint/common"
+	"github.com/kbhonagiri16/visualization-client/logging"
 )
 
 var (
