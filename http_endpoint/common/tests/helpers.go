@@ -12,10 +12,6 @@ import (
 
 const tokenHeaderName = "Authorization"
 
-func (w nullWriter) Write(p []byte) (int, error) {
-	return len(p), nil
-}
-
 /*MockClientContainer returns struct populated with all mocks required*/
 func MockClientContainer(mockCtrl *gomock.Controller) *common.ClientContainer {
 	mockedOpenstack := mock_openstack.NewMockClientInterface(mockCtrl)

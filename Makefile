@@ -31,7 +31,7 @@ init:
 	$(GO) get github.com/satori/go.uuid
 	$(GO) get -u github.com/ulule/deepcopier
 	$(GO) get -u gopkg.in/alecthomas/gometalinter.v1
-	# $(GO) get github.com/rubenv/sql-migrate/...
+	$(GO) get github.com/rubenv/sql-migrate/...
 	GOPATH=$(GOPATH) $(GOPATH)/bin/gometalinter.v1 --install
 	# as soon as our application does not use relative imports - source code
 	# has to be present in GOPATH to make lint work
@@ -53,7 +53,7 @@ lint:
 
 generate-mocks:
 	mkdir -p ./mock
-	GOPATH=$(GOPATH) $(GOPATH)/bin/mockgen -destination ./mock/mock.go visualization-client/ ClientInterface,DatabaseManager,SessionInterface
+	GOPATH=$(GOPATH) $(GOPATH)/bin/mockgen -destination ./mock/mock.go visualization-client ClientInterface,DatabaseManager,SessionInterface
 	mkdir -p ./http_endpoint/common/mock
 	GOPATH=$(GOPATH) $(GOPATH)/bin/mockgen -destination ./http_endpoint/common/mock/mock.go visualization-client/http_endpoint/common HandlerInterface,ClockInterface
 
