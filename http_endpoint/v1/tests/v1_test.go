@@ -80,7 +80,7 @@ func TestAuthHandler(t *testing.T) {
 		token          string
 		secret         string
 		tokenValid     bool
-		tokenInfo      *openstack.TokenInfo
+		tokenInfo      *visualization.TokenInfo
 		expectedResult []byte
 		returnID       int
 	}{
@@ -95,7 +95,7 @@ func TestAuthHandler(t *testing.T) {
 			token:       "token",
 			secret:      "secret",
 			tokenValid:  true,
-			tokenInfo: &openstack.TokenInfo{
+			tokenInfo: &visualization.TokenInfo{
 				ID:          "ID",
 				ProjectName: "test",
 				ProjectID:   "821fb77b2ab94232a1ff3d40028f63b4",
@@ -119,7 +119,7 @@ func TestAuthHandler(t *testing.T) {
 		if testCase.tokenValid {
 			mockedOpenstack.EXPECT().GetTokenInfo(testCase.token).Return(
 				testCase.tokenInfo, nil)
-			orgID := &grafanaclient.OrgID{}
+			orgID := &visualization.OrgID{}
 			orgID.ID = testCase.returnID
 			clientContainer.Grafana.(*mock_grafanaclient.MockSessionInterface).EXPECT().GetOrCreateOrgByName(testCase.tokenInfo.ProjectName+"-"+testCase.tokenInfo.ProjectID).Return(orgID, nil)
 			mockedClock.EXPECT().Now().Return(parsedTime.Add(
