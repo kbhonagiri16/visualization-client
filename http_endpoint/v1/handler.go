@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/kbhonagiri16/visualization"
 	"github.com/kbhonagiri16/visualization/http_endpoint/authentication"
 	"github.com/kbhonagiri16/visualization/http_endpoint/common"
 	v1handlers "github.com/kbhonagiri16/visualization/http_endpoint/v1/handlers"
@@ -153,7 +154,7 @@ func (h *V1Handler) CreateUser(clients *common.ClientContainer, res []byte) erro
 		return err
 	}
 
-	params := grafanaclient.AdminCreateUser{}
+	params := visualization.AdminCreateUser{}
 	err = json.Unmarshal(res, &params)
 	if err != nil {
 		log.Logger.Error(err)
@@ -283,7 +284,7 @@ func (h *V1Handler) CreateOrganization(clients *common.ClientContainer, res []by
 		v1handlers.LoginErrorCheck(err)
 		return err
 	}
-	params := grafanaclient.Org{}
+	params := visualization.Org{}
 	err = json.Unmarshal(res, &params)
 	if err != nil {
 		log.Logger.Error(err)
@@ -303,7 +304,7 @@ func (h *V1Handler) CreateOrganizationUser(clients *common.ClientContainer, OrgI
 		return err
 	}
 
-	params := grafanaclient.CreateOrganizationUser{}
+	params := visualization.CreateOrganizationUser{}
 	err = json.Unmarshal(res, &params)
 	if err != nil {
 		log.Logger.Error(err)
@@ -400,7 +401,7 @@ func (h *V1Handler) CreateDatasource(clients *common.ClientContainer, res []byte
 		return err
 	}
 
-	params := grafanaclient.DataSource{}
+	params := visualization.DataSource{}
 	err = json.Unmarshal(res, &params)
 	if err != nil {
 		log.Logger.Error(err)

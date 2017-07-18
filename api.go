@@ -11,7 +11,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Package grafanaclient provide a simple API to manage Grafana 4.0 DataSources and Dashboards in Go.
+// grafanaclient provide a simple API to manage Grafana 4.0 DataSources and Dashboards in Go.
 // It's using Grafana 4.0 REST API.
 // Credits https://github.com/adejoux/grafanaclient Alain Dejoux <adejoux@djouxtech.net>.
 package visualization

@@ -3,12 +3,12 @@ package v1handlers
 import (
 	"bytes"
 	"fmt"
-	"github.com/kbhonagiri16/visualization"
+	"text/template"
+
 	"github.com/kbhonagiri16/visualization/http_endpoint/common"
 	"github.com/kbhonagiri16/visualization/logging"
 	"github.com/kbhonagiri16/visualization/models"
 	"github.com/ulule/deepcopier"
-	"text/template"
 )
 
 // V1Visualizations implements part of handler interface

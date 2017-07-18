@@ -3,14 +3,14 @@ package v1handlers
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/kbhonagiri16/visualization"
-	"github.com/pressly/chi"
 	"net/http"
 	"regexp"
 	"strconv"
 
+	"github.com/kbhonagiri16/visualization"
 	"github.com/kbhonagiri16/visualization/http_endpoint/common"
 	"github.com/kbhonagiri16/visualization/logging"
+	"github.com/pressly/chi"
 )
 
 var emailValid = regexp.MustCompile(`^[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,4}$`)
