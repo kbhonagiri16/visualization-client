@@ -94,7 +94,7 @@ package-debug:
 	docker run -it -v $(PWD):/app com.mirantis.pv/build /bin/bash
 
 docker:
-	docker build -t $(DOCKER_USERNAME)/visualization-client -f tools/docker/visualization-api/Dockerfile .
+	docker build -t $(DOCKER_USERNAME)/visualization-client -f tools/docker/visualization-client/Dockerfile .
 
 docker-push:
 	docker push $(DOCKER_USERNAME)/visualization-client
