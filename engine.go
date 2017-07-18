@@ -9,7 +9,6 @@ import (
 	// import mysql driver for side-effect required for xorm package
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/go-xorm/xorm"
-	"github.com/kbhonagiri16/visualization-client/logging"
 	"github.com/satori/go.uuid"
 )
 
@@ -66,15 +65,11 @@ func NewXORMManager() *XORMManager {
 func (m *XORMManager) CreateVisualizationFromParam(name, organizationID string,
 	tags map[string]interface{}) (*Visualization, error) {
 
-	log.Logger.Debugf("Creating new Visualization entry named '%s'", name)
-
 	// XORM framework does not support generic JSON fields
 	// That's why XORM processes data as serialized json string
 	// That means that map[string]interface{} tags must be serialized to string
 	encodedTags, err := json.Marshal(tags)
 	if err != nil {
-		log.Logger.Errorf("Error on storing not serializable map[string]interface{}"+
-			" to json field : '%s'", err)
 		return nil, err
 	}
 
@@ -123,7 +118,6 @@ func getVisualizationLookupQuery(slug, name, organizationID string,
 
 	query := strings.Join(queryChunks, " AND ")
 
-	log.Logger.Debugf("Got lookup query '%s'", query)
 	return query, queryParams
 }
 
@@ -145,7 +139,6 @@ func (m *XORMManager) QueryVisualizationsDashboards(slug, name, organizationID s
 			VisualizationIDColumn)).Where(
 		query, queryParams...).Find(&queryResult)
 	if err != nil {
-		log.Logger.Errorf("Error on getting visualizations from db: '%s'", err)
 		return nil, err
 	}
 
@@ -177,7 +170,6 @@ func (m *XORMManager) GetVisualizationWithDashboardsBySlug(
 			VisualizationIDColumn)).Where(
 		query, queryParams...).Find(&queryResult)
 	if err != nil {
-		log.Logger.Errorf("Error on getting visualizations from db: '%s'", err)
 		return nil, nil, err
 	}
 
@@ -202,7 +194,6 @@ func getBulkDeleteDashboardQuery(dashboards []*Dashboard) (string, []interface{}
 		}
 		query := fmt.Sprintf("DELETE FROM %s WHERE id IN (%s);",
 			DashboardTableName, ids)
-		log.Logger.Debugf("Bulk Delete dashboard query is '%s'", query)
 		return query, queryParams
 	}
 	return "", nil
@@ -252,7 +243,6 @@ func (m *XORMManager) BulkUpdateDashboard(dashboards []*Dashboard) error {
 		query := fmt.Sprintf("INSERT INTO %s (%s) VALUES %s ON DUPLICATE KEY UPDATE %s;",
 			DashboardTableName, columnDBNamesString,
 			renderedParameters, columnUpdateString)
-		log.Logger.Debugf("Bulk Update dashboard query is '%s'", query)
 
 		_, err := engine.Exec(query, queryParams...)
 		return err

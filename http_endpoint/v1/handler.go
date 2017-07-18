@@ -6,11 +6,10 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/kbhonagiri16/visualization-client"
 	"github.com/kbhonagiri16/visualization-client/http_endpoint/authentication"
 	"github.com/kbhonagiri16/visualization-client/http_endpoint/common"
 	v1handlers "github.com/kbhonagiri16/visualization-client/http_endpoint/v1/handlers"
-	"github.com/kbhonagiri16/visualization-client/logging"
+	"visualization-client"
 )
 
 // TokenIssueHours defines on how much hours our token would be issued
@@ -29,7 +28,6 @@ func (h *V1Handler) AuthOpenstack(clients *common.ClientContainer,
 
 	tokenValid, err := clients.Openstack.ValidateToken(openstackToken)
 	if err != nil {
-		log.Logger.Errorf("Error validating openstack Token: %s", err)
 		return nil, err
 	}
 	if !tokenValid {
@@ -38,7 +36,6 @@ func (h *V1Handler) AuthOpenstack(clients *common.ClientContainer,
 
 	tokenInfo, err := clients.Openstack.GetTokenInfo(openstackToken)
 	if err != nil {
-		log.Logger.Errorf("Error retrieving openstack Token: %s", err)
 		return nil, err
 	}
 
@@ -157,7 +154,6 @@ func (h *V1Handler) CreateUser(clients *common.ClientContainer, res []byte) erro
 	params := visualization.AdminCreateUser{}
 	err = json.Unmarshal(res, &params)
 	if err != nil {
-		log.Logger.Error(err)
 		return err
 	}
 	err = clients.Grafana.CreateUser(params)
@@ -287,7 +283,6 @@ func (h *V1Handler) CreateOrganization(clients *common.ClientContainer, res []by
 	params := visualization.Org{}
 	err = json.Unmarshal(res, &params)
 	if err != nil {
-		log.Logger.Error(err)
 		return err
 	}
 
@@ -307,7 +302,6 @@ func (h *V1Handler) CreateOrganizationUser(clients *common.ClientContainer, OrgI
 	params := visualization.CreateOrganizationUser{}
 	err = json.Unmarshal(res, &params)
 	if err != nil {
-		log.Logger.Error(err)
 		return err
 	}
 
@@ -404,7 +398,6 @@ func (h *V1Handler) CreateDatasource(clients *common.ClientContainer, res []byte
 	params := visualization.DataSource{}
 	err = json.Unmarshal(res, &params)
 	if err != nil {
-		log.Logger.Error(err)
 		return err
 	}
 	err = clients.Grafana.CreateDataSource(params)

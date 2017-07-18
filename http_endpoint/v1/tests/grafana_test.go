@@ -21,7 +21,6 @@ import (
 const ID = 1
 
 func TestGrafanaUsersGetHttp(t *testing.T) {
-	testHelper.InitializeLogger()
 
 	tests := []struct {
 		description      string
@@ -71,7 +70,6 @@ func TestGrafanaUsersGetHttp(t *testing.T) {
 }
 
 func TestGrafanaUserIDGetHttp(t *testing.T) {
-	testHelper.InitializeLogger()
 
 	tests := []struct {
 		description      string
@@ -136,7 +134,6 @@ func TestGrafanaUserIDGetHttp(t *testing.T) {
 }
 
 func TestGrafanaUsersCreateHttp(t *testing.T) {
-	testHelper.InitializeLogger()
 
 	tests := []struct {
 		description      string
@@ -207,7 +204,6 @@ func TestGrafanaUsersCreateHttp(t *testing.T) {
 }
 
 func TestGrafanaDeleteUserHttp(t *testing.T) {
-	testHelper.InitializeLogger()
 
 	tests := []struct {
 		description      string
@@ -271,7 +267,6 @@ func TestGrafanaDeleteUserHttp(t *testing.T) {
 }
 
 func TestOrganizationsGetHttp(t *testing.T) {
-	testHelper.InitializeLogger()
 
 	tests := []struct {
 		description      string
@@ -318,7 +313,6 @@ func TestOrganizationsGetHttp(t *testing.T) {
 }
 
 func TestGrafanaOrganizationIDGetHttp(t *testing.T) {
-	testHelper.InitializeLogger()
 
 	tests := []struct {
 		description      string
@@ -383,7 +377,6 @@ func TestGrafanaOrganizationIDGetHttp(t *testing.T) {
 }
 
 func TestGrafanaOrganizationCreateHttp(t *testing.T) {
-	testHelper.InitializeLogger()
 
 	tests := []struct {
 		description      string
@@ -455,7 +448,6 @@ func TestGrafanaOrganizationCreateHttp(t *testing.T) {
 }
 
 func TestGrafanaDeleteOrganizationHttp(t *testing.T) {
-	testHelper.InitializeLogger()
 
 	tests := []struct {
 		description      string
@@ -519,7 +511,6 @@ func TestGrafanaDeleteOrganizationHttp(t *testing.T) {
 }
 
 func TestGrafanaOrganizationUserIDGetHttp(t *testing.T) {
-	testHelper.InitializeLogger()
 
 	tests := []struct {
 		description      string
@@ -585,7 +576,6 @@ func TestGrafanaOrganizationUserIDGetHttp(t *testing.T) {
 }
 
 func TestGrafanaDeleteOrganizationUserHttp(t *testing.T) {
-	testHelper.InitializeLogger()
 
 	tests := []struct {
 		description        string
@@ -678,7 +668,6 @@ func TestGrafanaUserGet(t *testing.T) {
 			output:         []byte(`[{"userID":"1","name":"","login":"admin","email":"admin@localhost"}]`),
 		},
 	}
-	testHelper.InitializeLogger()
 	for _, testCase := range tests {
 		mockCtrl := gomock.NewController(t)
 		defer mockCtrl.Finish()
@@ -707,7 +696,6 @@ func TestGrafanaUserGetID(t *testing.T) {
 			output:         []byte(`{"userID":"1","name":"","login":"admin","email":"admin@localhost"}`),
 		},
 	}
-	testHelper.InitializeLogger()
 	for _, testCase := range tests {
 		mockCtrl := gomock.NewController(t)
 		defer mockCtrl.Finish()
@@ -737,7 +725,6 @@ func TestGrafanaUserCreate(t *testing.T) {
 			params:      []byte(`{"Name":"admin","Email":"admin@localhost.com","Login":"admin","Password":"password"}`),
 		},
 	}
-	testHelper.InitializeLogger()
 	for _, testCase := range tests {
 		mockCtrl := gomock.NewController(t)
 		defer mockCtrl.Finish()
@@ -764,7 +751,6 @@ func TestGrafanaUserDelete(t *testing.T) {
 			expectedResult: nil,
 		},
 	}
-	testHelper.InitializeLogger()
 	for _, testCase := range tests {
 		mockCtrl := gomock.NewController(t)
 		defer mockCtrl.Finish()
@@ -792,7 +778,6 @@ func TestGrafanaOrganizationGet(t *testing.T) {
 			output:         []byte(`[{"name":"Main Org.","organizationID":"1"}]`),
 		},
 	}
-	testHelper.InitializeLogger()
 	for _, testCase := range tests {
 		mockCtrl := gomock.NewController(t)
 		defer mockCtrl.Finish()
@@ -822,7 +807,6 @@ func TestGrafanaOrganizationGetID(t *testing.T) {
 			output:         []byte(`{"organizationID":1,"name":"Main Org."}`),
 		},
 	}
-	testHelper.InitializeLogger()
 	for _, testCase := range tests {
 		mockCtrl := gomock.NewController(t)
 		defer mockCtrl.Finish()
@@ -852,7 +836,6 @@ func TestGrafanaOrganizationCreate(t *testing.T) {
 			params:      []byte(`{"Name":"org1"}`),
 		},
 	}
-	testHelper.InitializeLogger()
 	for _, testCase := range tests {
 		mockCtrl := gomock.NewController(t)
 		defer mockCtrl.Finish()
@@ -879,7 +862,6 @@ func TestGrafanaOrgDelete(t *testing.T) {
 			expectedResult: nil,
 		},
 	}
-	testHelper.InitializeLogger()
 	for _, testCase := range tests {
 		mockCtrl := gomock.NewController(t)
 		defer mockCtrl.Finish()
@@ -907,7 +889,6 @@ func TestGrafanaOrgUserGet(t *testing.T) {
 			output:         []byte(`[{"organizationID":"1","userID":"1","login":"admin","role":"Viewer","email":""}]`),
 		},
 	}
-	testHelper.InitializeLogger()
 	for _, testCase := range tests {
 		mockCtrl := gomock.NewController(t)
 		defer mockCtrl.Finish()
@@ -937,7 +918,6 @@ func TestGrafanaOrgUserCreate(t *testing.T) {
 			params:      []byte(`{"Name": "admin", "Login": "admin", "Email": "admin@localhost.com", "Password": "password", "Role": "Viewer"}`),
 		},
 	}
-	testHelper.InitializeLogger()
 	for _, testCase := range tests {
 		mockCtrl := gomock.NewController(t)
 		defer mockCtrl.Finish()
@@ -964,7 +944,6 @@ func TestGrafanaOrgUserDelete(t *testing.T) {
 			expectedResult: nil,
 		},
 	}
-	testHelper.InitializeLogger()
 	for _, testCase := range tests {
 		mockCtrl := gomock.NewController(t)
 		defer mockCtrl.Finish()

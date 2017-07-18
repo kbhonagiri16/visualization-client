@@ -1,12 +1,12 @@
+go_import_path: github.com/kbhonagiri16/visualization-client
+
 language: go
+
 go:
   - 1.7.x
 
 os:
   - linux
-
-services:
-  - docker
 
 before_install:
   - make init
@@ -19,10 +19,3 @@ script:
   - make test-integration
   - make package-init
   - make package
-  - make docker
-
-after_success:
-  - if [ "$TRAVIS_BRANCH" == "master" ]; then
-    docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
-    make docker-push;
-    fi

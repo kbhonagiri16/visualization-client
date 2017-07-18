@@ -46,7 +46,6 @@ func TestAuthEndpoint(t *testing.T) {
 		},
 	}
 
-	testHelper.InitializeLogger()
 	for _, testCase := range tests {
 		mockCtrl := gomock.NewController(t)
 		defer mockCtrl.Finish()
@@ -105,7 +104,6 @@ func TestAuthHandler(t *testing.T) {
 		},
 	}
 
-	testHelper.InitializeLogger()
 	for _, testCase := range tests {
 		mockCtrl := gomock.NewController(t)
 		defer mockCtrl.Finish()

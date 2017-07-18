@@ -4,7 +4,6 @@ import (
 	"github.com/gophercloud/gophercloud"
 	"github.com/gophercloud/gophercloud/openstack"
 	"github.com/gophercloud/gophercloud/openstack/identity/v3/tokens"
-	"github.com/kbhonagiri16/visualization-client/logging"
 	"github.com/mitchellh/mapstructure"
 	"time"
 )
@@ -30,7 +29,7 @@ type Client struct {
 func (cli *Client) ValidateToken(token string) (bool, error) {
 	valid, err := tokens.Validate(cli.keystoneClient, token)
 	if err != nil {
-		log.Logger.Errorf("Error validating token %s", err)
+		return valid, err
 	}
 	return valid, err
 }
@@ -40,7 +39,6 @@ func (cli *Client) GetTokenInfo(token string) (*TokenInfo, error) {
 	response := tokens.Get(cli.keystoneClient, token)
 
 	if response.Err != nil {
-		log.Logger.Errorf("Error retrieving token %s", response.Err)
 		return nil, response.Err
 	}
 
@@ -59,7 +57,6 @@ func (cli *Client) GetTokenInfo(token string) (*TokenInfo, error) {
 
 	err := mapstructure.Decode(response.Body, &parsedResponse)
 	if err != nil {
-		log.Logger.Errorf("Error parsing token %s", err)
 		return nil, err
 	}
 
@@ -69,15 +66,12 @@ func (cli *Client) GetTokenInfo(token string) (*TokenInfo, error) {
 	resultToken.ExpiresAt, err = time.Parse(gophercloud.RFC3339Milli,
 		parsedResponse.Token.ExpiresAt)
 	if err != nil {
-		log.Logger.Errorf("Error parsing time in token %s", err)
 		return nil, err
 	}
 	resultToken.Roles = parsedResponse.Token.Roles
 	resultToken.ProjectID = parsedResponse.Token.Project.ID
 	resultToken.ProjectName = parsedResponse.Token.Project.Name
 
-	log.Logger.Debugf("Successfully retrieved openstack data for token %s",
-		token)
 	return &resultToken, nil
 }
 

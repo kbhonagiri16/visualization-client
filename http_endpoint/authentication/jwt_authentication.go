@@ -2,10 +2,10 @@ package httpAuth
 
 import (
 	"context"
+	"fmt"
 	"github.com/auth0/go-jwt-middleware"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/kbhonagiri16/visualization-client/http_endpoint/common"
-	"github.com/kbhonagiri16/visualization-client/logging"
 	"net/http"
 	"time"
 )
@@ -34,7 +34,7 @@ func JWTTokenFromParams(secret string, isAdmin bool, projectID string,
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	result, err := token.SignedString([]byte(secret))
 	if err != nil {
-		log.Logger.Debugf("Error signing JWTToken %s", err)
+		fmt.Sprintf("Error signing JWTToken %s", err)
 	}
 	return result, err
 }

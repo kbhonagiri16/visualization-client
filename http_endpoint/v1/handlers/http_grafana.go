@@ -9,7 +9,6 @@ import (
 
 	"github.com/kbhonagiri16/visualization-client"
 	"github.com/kbhonagiri16/visualization-client/http_endpoint/common"
-	"github.com/kbhonagiri16/visualization-client/logging"
 	"github.com/pressly/chi"
 )
 
@@ -20,8 +19,8 @@ type V1UsersOrgs struct{}
 
 // orgUser struct for create organization user
 type orgUser struct {
-	Email    string `json:"email"`
 	Login    string `json:"login"`
+	Email    string `json:"email"`
 	Name     string `json:"name"`
 	Role     string `json:"role"`
 	Password string `json:"password" binding:"Required"`
@@ -53,7 +52,6 @@ type DataSource struct {
 // LoginErrorCheck handles errors for login
 func LoginErrorCheck(err error) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		log.Logger.Error(err)
 		common.WriteErrorToResponse(w, http.StatusInternalServerError,
 			http.StatusText(http.StatusInternalServerError),
 			"Internal server error occured")
@@ -84,7 +82,6 @@ func helperCreateDatasource(clients *common.ClientContainer, handler common.Hand
 			return err
 		// If any other error happened -> return 500 error
 		default:
-			log.Logger.Error(err)
 			common.WriteErrorToResponse(w, http.StatusInternalServerError,
 				http.StatusText(http.StatusInternalServerError),
 				"Internal server error occured")
@@ -119,7 +116,6 @@ func helperOrgUser(clients *common.ClientContainer, handler common.HandlerInterf
 			return err
 		// If any other error happened -> return 500 error
 		default:
-			log.Logger.Error(err)
 			common.WriteErrorToResponse(w, http.StatusInternalServerError,
 				http.StatusText(http.StatusInternalServerError),
 				"Internal server error occured")
@@ -140,7 +136,6 @@ func helperOrgUser(clients *common.ClientContainer, handler common.HandlerInterf
 			return err
 		// If any other error happened -> return 500 error
 		default:
-			log.Logger.Error(err)
 			common.WriteErrorToResponse(w, http.StatusInternalServerError,
 				http.StatusText(http.StatusInternalServerError),
 				"Internal server error occured")
@@ -173,7 +168,6 @@ func helperCreateUser(clients *common.ClientContainer, handler common.HandlerInt
 			return err
 		// If any other error happened -> return 500 error
 		default:
-			log.Logger.Error(err)
 			common.WriteErrorToResponse(w, http.StatusInternalServerError,
 				http.StatusText(http.StatusInternalServerError),
 				"Internal server error occured")
@@ -190,7 +184,6 @@ func GetUsers(clients *common.ClientContainer, handler common.HandlerInterface) 
 	return func(w http.ResponseWriter, r *http.Request) {
 		users, err := handler.GetUsers(clients)
 		if err != nil {
-			log.Logger.Error(err)
 			common.WriteErrorToResponse(w, http.StatusInternalServerError,
 				http.StatusText(http.StatusInternalServerError),
 				"Internal server error occured")
@@ -223,7 +216,6 @@ func GetUsersID(clients *common.ClientContainer, handler common.HandlerInterface
 				return
 			// If any other error happened -> return 500 error
 			default:
-				log.Logger.Error(err)
 				common.WriteErrorToResponse(w, http.StatusInternalServerError,
 					http.StatusText(http.StatusInternalServerError),
 					"Internal server error occured")
@@ -259,7 +251,6 @@ func DeleteUser(clients *common.ClientContainer, handler common.HandlerInterface
 				return
 			// If any other error happened -> return 500 error
 			default:
-				log.Logger.Error(err)
 				common.WriteErrorToResponse(w, http.StatusInternalServerError,
 					http.StatusText(http.StatusInternalServerError),
 					"Internal server error occured")
@@ -270,7 +261,6 @@ func DeleteUser(clients *common.ClientContainer, handler common.HandlerInterface
 		// if ID exists then delete that user
 		err = handler.DeleteUser(clients, ID)
 		if err != nil {
-			log.Logger.Error(err)
 			common.WriteErrorToResponse(w, http.StatusInternalServerError,
 				http.StatusText(http.StatusInternalServerError),
 				"Internal server error occured")
@@ -329,7 +319,6 @@ func GetOrganization(clients *common.ClientContainer, handler common.HandlerInte
 	return func(w http.ResponseWriter, r *http.Request) {
 		orglist, err := handler.GetOrganizations(clients)
 		if err != nil {
-			log.Logger.Error(err)
 			common.WriteErrorToResponse(w, http.StatusInternalServerError,
 				http.StatusText(http.StatusInternalServerError),
 				"Internal server error occured")
@@ -362,7 +351,6 @@ func GetOrganizationID(clients *common.ClientContainer, handler common.HandlerIn
 				return
 			// If any other error happened -> return 500 error
 			default:
-				log.Logger.Error(err)
 				common.WriteErrorToResponse(w, http.StatusInternalServerError,
 					http.StatusText(http.StatusInternalServerError),
 					"Internal server error occured")
@@ -399,7 +387,6 @@ func DeleteOrganization(clients *common.ClientContainer, handler common.HandlerI
 				return
 			// If any other error happened -> return 500 error
 			default:
-				log.Logger.Error(err)
 				common.WriteErrorToResponse(w, http.StatusInternalServerError,
 					http.StatusText(http.StatusInternalServerError),
 					"Internal server error occured")
@@ -410,7 +397,6 @@ func DeleteOrganization(clients *common.ClientContainer, handler common.HandlerI
 		// delete the organization if ID exists
 		err = handler.DeleteOrganization(clients, ID)
 		if err != nil {
-			log.Logger.Error(err)
 			common.WriteErrorToResponse(w, http.StatusInternalServerError,
 				http.StatusText(http.StatusInternalServerError),
 				"Internal server error occured")
@@ -463,7 +449,6 @@ func CreateOrganization(clients *common.ClientContainer, handler common.HandlerI
 				return
 			// If any other error happened -> return 500 error
 			default:
-				log.Logger.Error(err)
 				common.WriteErrorToResponse(w, http.StatusInternalServerError,
 					http.StatusText(http.StatusInternalServerError),
 					"Internal server error occured")
@@ -565,7 +550,6 @@ func DeleteOrganizationUser(clients *common.ClientContainer, handler common.Hand
 				return
 			// If any other error happened -> return 500 error
 			default:
-				log.Logger.Error(err)
 				common.WriteErrorToResponse(w, http.StatusInternalServerError,
 					http.StatusText(http.StatusInternalServerError),
 					"Internal server error occured")
@@ -585,7 +569,6 @@ func DeleteOrganizationUser(clients *common.ClientContainer, handler common.Hand
 				return
 			// If any other error happened -> return 500 error
 			default:
-				log.Logger.Error(err)
 				common.WriteErrorToResponse(w, http.StatusInternalServerError,
 					http.StatusText(http.StatusInternalServerError),
 					"Internal server error occured")
@@ -595,7 +578,6 @@ func DeleteOrganizationUser(clients *common.ClientContainer, handler common.Hand
 
 		err = handler.DeleteOrganizationUser(clients, ID, organizationID)
 		if err != nil {
-			log.Logger.Error(err)
 			common.WriteErrorToResponse(w, http.StatusInternalServerError,
 				http.StatusText(http.StatusInternalServerError),
 				"Internal server error occured")
@@ -627,7 +609,6 @@ func GetOrganizationUser(clients *common.ClientContainer, handler common.Handler
 				return
 			// If any other error happened -> return 500 error
 			default:
-				log.Logger.Error(err)
 				common.WriteErrorToResponse(w, http.StatusInternalServerError,
 					http.StatusText(http.StatusInternalServerError),
 					"Internal server error occured")
@@ -651,7 +632,6 @@ func GetDatasources(clients *common.ClientContainer, handler common.HandlerInter
 	return func(w http.ResponseWriter, r *http.Request) {
 		datasourcelist, err := handler.GetDatasources(clients)
 		if err != nil {
-			log.Logger.Error(err)
 			common.WriteErrorToResponse(w, http.StatusInternalServerError,
 				http.StatusText(http.StatusInternalServerError),
 				"Internal server error occured")
@@ -684,7 +664,6 @@ func GetDatasourceID(clients *common.ClientContainer, handler common.HandlerInte
 				return
 			// If any other error happened -> return 500 error
 			default:
-				log.Logger.Error(err)
 				common.WriteErrorToResponse(w, http.StatusInternalServerError,
 					http.StatusText(http.StatusInternalServerError),
 					"Internal server error occured")
@@ -721,7 +700,6 @@ func DeleteDatasource(clients *common.ClientContainer, handler common.HandlerInt
 				return
 			// If any other error happened -> return 500 error
 			default:
-				log.Logger.Error(err)
 				common.WriteErrorToResponse(w, http.StatusInternalServerError,
 					http.StatusText(http.StatusInternalServerError),
 					"Internal server error occured")
@@ -732,7 +710,6 @@ func DeleteDatasource(clients *common.ClientContainer, handler common.HandlerInt
 		// delete the datasource if ID exists
 		err = handler.DeleteDatasource(clients, ID)
 		if err != nil {
-			log.Logger.Error(err)
 			common.WriteErrorToResponse(w, http.StatusInternalServerError,
 				http.StatusText(http.StatusInternalServerError),
 				"Internal server error occured")

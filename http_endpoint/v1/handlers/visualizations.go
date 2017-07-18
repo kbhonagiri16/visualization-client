@@ -5,10 +5,9 @@ import (
 	"fmt"
 	"text/template"
 
-	"github.com/kbhonagiri16/visualization-client"
 	"github.com/kbhonagiri16/visualization-client/http_endpoint/common"
-	"github.com/kbhonagiri16/visualization-client/logging"
 	"github.com/ulule/deepcopier"
+	"visualization-client"
 )
 
 // V1Visualizations implements part of handler interface
@@ -19,7 +18,6 @@ func VisualizationDashboardToResponse(visualization *visualization.Visualization
 	dashboards []*visualization.Dashboard) *common.VisualizationWithDashboards {
 	// This function is used, when we have to return visualization with
 	// limited number of dashboards (for example in post method)
-	log.Logger.Debug("rendering data to user")
 	visualizationResponse := &common.VisualizationResponseEntry{}
 	dashboardResponse := []*common.DashboardResponseEntry{}
 	deepcopier.Copy(visualization).To(visualizationResponse)
@@ -37,7 +35,6 @@ func GroupedVisualizationDashboardToResponse(
 	data *map[visualization.Visualization][]*visualization.Dashboard) *[]common.VisualizationWithDashboards {
 	// This function is used, when
 
-	log.Logger.Debug("rendering data to user")
 	response := []common.VisualizationWithDashboards{}
 	for visualizationPtr, dashboards := range *data {
 		renderedVisualization := VisualizationDashboardToResponse(
@@ -51,12 +48,10 @@ func GroupedVisualizationDashboardToResponse(
 func (h *V1Visualizations) VisualizationsGet(clients *common.ClientContainer,
 	organizationID, name string, tags map[string]interface{}) (
 	*[]common.VisualizationWithDashboards, error) {
-	log.Logger.Debug("Querying data to user according to name and tags")
 
 	data, err := clients.DatabaseManager.QueryVisualizationsDashboards(
 		"", name, organizationID, tags)
 	if err != nil {
-		log.Logger.Errorf("Error getting data from db: '%s'", err)
 		return nil, err
 	}
 
@@ -66,7 +61,6 @@ func (h *V1Visualizations) VisualizationsGet(clients *common.ClientContainer,
 func renderTemplates(templates []string, templateParamaters []interface{}) (
 	[]string, error) {
 	// this function takes Visualization data and returns rendered templates
-	log.Logger.Debug("Rendering golang templates")
 	renderedTemplates := []string{}
 	for index := range templates {
 		// validate that golang template is valid
@@ -109,7 +103,6 @@ func (h *V1Visualizations) VisualizationsPost(clients *common.ClientContainer,
 		5 - return data to user
 	*/
 
-	log.Logger.Debug("Extracting names, templates, data from provided user data")
 	templates := []string{}
 	templateParamaters := []interface{}{}
 	dashboardNames := []string{}
@@ -118,7 +111,6 @@ func (h *V1Visualizations) VisualizationsPost(clients *common.ClientContainer,
 		templateParamaters = append(templateParamaters, dashboardData.TemplateParameters)
 		dashboardNames = append(dashboardNames, dashboardData.Name)
 	}
-	log.Logger.Debug("Extracted names, templates, data from provided user data")
 
 	renderedTemplates, err := renderTemplates(templates, templateParamaters)
 	if err != nil {
@@ -126,10 +118,8 @@ func (h *V1Visualizations) VisualizationsPost(clients *common.ClientContainer,
 	}
 
 	// create db entries for visualizations and dashboards
-	log.Logger.Debug("Creating database entries for visualizations and dashboards")
 	visualizationDB, dashboardsDB, err := clients.DatabaseManager.CreateVisualizationsWithDashboards(
 		data.Name, organizationID, data.Tags, dashboardNames, renderedTemplates)
-	log.Logger.Debug("Created database entries for visualizations and dashboards")
 	if err != nil {
 		return nil, err
 	}
@@ -152,17 +142,11 @@ func (h *V1Visualizations) VisualizationsPost(clients *common.ClientContainer,
 
 	uploadedGrafanaSlugs := []string{}
 
-	log.Logger.Debug("Uploading dashboard data to grafana")
 	for _, renderedTemplate := range renderedTemplates {
 		slug, grafanaUploadErr := clients.Grafana.UploadDashboard(
 			[]byte(renderedTemplate), organizationID, false)
 		if grafanaUploadErr != nil {
 			// We can not create grafana dashboard using user-provided template
-			log.Logger.Errorf("Error during performing grafana call "+
-				" for dashboard upload %s", grafanaUploadErr)
-			log.Logger.Debugf("Due to error '%s' - already created grafana "+
-				" dashboards, matching the same visualization, would be deleted",
-				grafanaUploadErr)
 
 			updateDashboardsDB := []*visualization.Dashboard{}
 			deleteDashboardsDB := []*visualization.Dashboard{}
@@ -172,14 +156,11 @@ func (h *V1Visualizations) VisualizationsPost(clients *common.ClientContainer,
 				// corresponding db entry has to be updated with grafanaSlug
 				// to guarantee consistency
 				if grafanaDeletionErr != nil {
-					log.Logger.Errorf("Error during performing grafana call "+
-						" for dashboard deletion %s", grafanaDeletionErr)
 					dashboard := dashboardsDB[index]
 					dashboard.Slug = uploadedGrafanaSlugs[index]
 					updateDashboardsDB = append(
 						updateDashboardsDB, dashboard)
 				} else {
-					log.Logger.Debug("deleted dashboard from grafana")
 					deleteDashboardsDB = append(deleteDashboardsDB,
 						dashboardsDB[index])
 				}
@@ -191,25 +172,24 @@ func (h *V1Visualizations) VisualizationsPost(clients *common.ClientContainer,
 			if len(updateDashboardsDB) > 0 {
 				dashboardsToReturn := []*visualization.Dashboard{}
 				dashboardsToReturn = append(dashboardsToReturn, updateDashboardsDB...)
-				log.Logger.Debug("Updating db dashboards with grafana slugs")
 				updateErrorDB := clients.DatabaseManager.BulkUpdateDashboard(
 					updateDashboardsDB)
 				if updateErrorDB != nil {
-					log.Logger.Errorf("Error during cleanup on grafana upload"+
+					fmt.Sprintf("Error during cleanup on grafana upload"+
 						" error '%s'. Unable to update db entities of dashboards"+
 						" with slugs of corresponding grafana dashboards for"+
 						"dashboards not deleted from grafana '%s'",
 						grafanaUploadErr, updateErrorDB)
 				}
-				log.Logger.Debug("Deleting db dashboards that are not uploaded" +
+				fmt.Sprintf("Deleting db dashboards that are not uploaded" +
 					" to grafana")
 				deletionErrorDB := clients.DatabaseManager.BulkDeleteDashboard(
 					deleteDashboardsDB)
 				if deletionErrorDB != nil {
-					log.Logger.Debug("due to failed deletion operation - extend" +
+					fmt.Sprintf("due to failed deletion operation - extend" +
 						" the slice of returned dashboards to user")
 					dashboardsToReturn = append(dashboardsToReturn, deleteDashboardsDB...)
-					log.Logger.Errorf("Error during cleanup on grafana upload"+
+					fmt.Sprintf("Error during cleanup on grafana upload"+
 						" error '%s'. Unable to delete entities of grafana "+
 						"dashboards deleted from grafana '%s'",
 						grafanaUploadErr, updateErrorDB)
@@ -219,13 +199,13 @@ func (h *V1Visualizations) VisualizationsPost(clients *common.ClientContainer,
 				return result, common.NewClientError(
 					"Unable to create new grafana dashboards, and remove old ones")
 			}
-			log.Logger.Debug("trying to delete visualization with " +
+			fmt.Sprintf("trying to delete visualization with " +
 				"corresponding dashboards from database. dashboards have no " +
 				"matching grafana uploads")
 			visualizationDeletionErr := clients.DatabaseManager.DeleteVisualization(
 				visualizationDB)
 			if visualizationDeletionErr != nil {
-				log.Logger.Error("Unable to delete visualization entry " +
+				fmt.Sprintf("Unable to delete visualization entry " +
 					"from db with corresponding dashboards entries. " +
 					"all entries are returned to user")
 				result := VisualizationDashboardToResponse(
@@ -233,24 +213,24 @@ func (h *V1Visualizations) VisualizationsPost(clients *common.ClientContainer,
 				return result, common.NewClientError(
 					"Unable to create new grafana dashboards, and remove old ones")
 			}
-			log.Logger.Debug("All created data was deleted both from grafana " +
+			fmt.Sprintf("All created data was deleted both from grafana " +
 				"and from database without errors. original grafana error is returned")
 			return nil, grafanaUploadErr
 		}
-		log.Logger.Infof("Created dashboard named '%s'", slug)
+		fmt.Sprintf("Created dashboard named '%s'", slug)
 		uploadedGrafanaSlugs = append(uploadedGrafanaSlugs, slug)
 	}
-	log.Logger.Debug("Uploaded dashboard data to grafana")
+	fmt.Sprintf("Uploaded dashboard data to grafana")
 
 	// Positive outcome. All dashboards were created both in db and grafana
 	for index := range dashboardsDB {
 		dashboardsDB[index].Slug = uploadedGrafanaSlugs[index]
 	}
-	log.Logger.Debug("Updating db entries of dashboards with corresponding" +
+	fmt.Sprintf("Updating db entries of dashboards with corresponding" +
 		" grafana slugs")
 	updateErrorDB := clients.DatabaseManager.BulkUpdateDashboard(dashboardsDB)
 	if updateErrorDB != nil {
-		log.Logger.Errorf("Error updating db dashboard slugs '%s'", updateErrorDB)
+		fmt.Sprintf("Error updating db dashboard slugs '%s'", updateErrorDB)
 		return nil, err
 	}
 
@@ -261,18 +241,18 @@ func (h *V1Visualizations) VisualizationsPost(clients *common.ClientContainer,
 func (h *V1Visualizations) VisualizationDelete(clients *common.ClientContainer,
 	organizationID, visualizationSlug string) (
 	*common.VisualizationWithDashboards, error) {
-	log.Logger.Debug("getting data from db matching provided string")
+	fmt.Sprintf("getting data from db matching provided string")
 	visualizationDB, dashboardsDB, err := clients.DatabaseManager.GetVisualizationWithDashboardsBySlug(
 		visualizationSlug, organizationID)
-	log.Logger.Debug("got data from db matching provided string")
+	fmt.Sprintf("got data from db matching provided string")
 
 	if err != nil {
-		log.Logger.Errorf("Error getting data from db: '%s'", err)
+		fmt.Sprintf("Error getting data from db: '%s'", err)
 		return nil, err
 	}
 
 	if visualizationDB == nil {
-		log.Logger.Errorf("User requested visualization '%s' not found in db", visualizationSlug)
+		fmt.Sprintf("User requested visualization '%s' not found in db", visualizationSlug)
 		return nil, common.NewUserDataError("No visualizations found")
 	}
 
@@ -284,7 +264,7 @@ func (h *V1Visualizations) VisualizationDelete(clients *common.ClientContainer,
 			removedDashboardsFromGrafana = append(removedDashboardsFromGrafana,
 				dashboardsDB[index])
 		} else {
-			log.Logger.Debugf("Removing grafana dashboard '%s'", dashboardDB.Slug)
+			fmt.Sprintf("Removing grafana dashboard '%s'", dashboardDB.Slug)
 			err = clients.Grafana.DeleteDashboard(dashboardDB.Slug, organizationID)
 			if err != nil {
 				failedToRemoveDashboardsFromGrafana = append(
@@ -297,23 +277,23 @@ func (h *V1Visualizations) VisualizationDelete(clients *common.ClientContainer,
 	}
 
 	if len(failedToRemoveDashboardsFromGrafana) != 0 {
-		log.Logger.Debug("Deleting dashboards from db")
+		fmt.Sprintf("Deleting dashboards from db")
 		deletionError := clients.DatabaseManager.BulkDeleteDashboard(
 			removedDashboardsFromGrafana)
 		if deletionError != nil {
-			log.Logger.Error(deletionError)
+			fmt.Println(deletionError)
 		}
-		log.Logger.Debug("Deleted dashboards from db")
+		fmt.Sprintf("Deleted dashboards from db")
 
 		result := VisualizationDashboardToResponse(visualizationDB,
 			failedToRemoveDashboardsFromGrafana)
 		return result, common.NewClientError("failed to remove data from grafana")
 	}
-	log.Logger.Debugf("removing visualization '%s' from db", visualizationSlug)
+	fmt.Sprintf("removing visualization '%s' from db", visualizationSlug)
 	err = clients.DatabaseManager.DeleteVisualization(visualizationDB)
 	if err != nil {
-		log.Logger.Error()
+		fmt.Println(err)
 	}
-	log.Logger.Debugf("removed visualization '%s' from db", visualizationSlug)
+	fmt.Sprintf("removed visualization '%s' from db", visualizationSlug)
 	return VisualizationDashboardToResponse(visualizationDB, dashboardsDB), nil
 }

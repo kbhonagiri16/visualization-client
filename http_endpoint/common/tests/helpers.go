@@ -5,7 +5,6 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/kbhonagiri16/visualization-client/http_endpoint/authentication"
 	"github.com/kbhonagiri16/visualization-client/http_endpoint/common"
-	"github.com/kbhonagiri16/visualization-client/logging"
 	"net/http"
 	"time"
 	"visualization/mock"
@@ -17,11 +16,6 @@ type nullWriter struct{}
 
 func (w nullWriter) Write(p []byte) (int, error) {
 	return len(p), nil
-}
-
-// InitializeLogger initializes logger for tests with empty file writer
-func InitializeLogger() {
-	log.InitializeLogger(&nullWriter{}, false, "critical")
 }
 
 /*MockClientContainer returns struct populated with all mocks required*/

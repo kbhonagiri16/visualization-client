@@ -59,7 +59,6 @@ func TestVisualizationsGetTagsAndName(t *testing.T) {
 	const projectID = "3"
 	const secret = "secret"
 
-	testHelper.InitializeLogger()
 	for _, testCase := range tests {
 		mockCtrl := gomock.NewController(t)
 		defer mockCtrl.Finish()
@@ -126,7 +125,6 @@ func TestVisualizationsGetResponses(t *testing.T) {
 	const projectID = "3"
 	const secret = "secret"
 
-	testHelper.InitializeLogger()
 	for _, testCase := range tests {
 		mockCtrl := gomock.NewController(t)
 		defer mockCtrl.Finish()
@@ -182,7 +180,6 @@ func TestVisualizationDeleteUUIDArg(t *testing.T) {
 	const projectID = "3"
 	const secret = "secret"
 
-	testHelper.InitializeLogger()
 	for _, testCase := range tests {
 		mockCtrl := gomock.NewController(t)
 		defer mockCtrl.Finish()
@@ -289,7 +286,6 @@ func TestVisualizationDeleteResponses(t *testing.T) {
 	const projectID = "3"
 	const secret = "secret"
 
-	testHelper.InitializeLogger()
 	for _, testCase := range tests {
 		mockCtrl := gomock.NewController(t)
 		defer mockCtrl.Finish()
@@ -464,7 +460,6 @@ func TestVisualizationPostResponses(t *testing.T) {
 	const projectID = "3"
 	const secret = "secret"
 
-	testHelper.InitializeLogger()
 	for _, testCase := range tests {
 		mockCtrl := gomock.NewController(t)
 		defer mockCtrl.Finish()
@@ -519,7 +514,6 @@ func TestVisualizationDashboardToResponse(t *testing.T) {
 		},
 	}
 
-	testHelper.InitializeLogger()
 	for _, testCase := range tests {
 		returnedResult := v1handlers.VisualizationDashboardToResponse(testCase.visualization, testCase.dashboards)
 		assert.Equal(t, testCase.result, returnedResult,
@@ -548,7 +542,6 @@ func TestGroupedVisualizationDashboardToResponse(t *testing.T) {
 		},
 	}
 
-	testHelper.InitializeLogger()
 	for _, testCase := range tests {
 		returnedResult := v1handlers.GroupedVisualizationDashboardToResponse(testCase.inputDataMap)
 		assert.Equal(t, testCase.result, returnedResult,
@@ -599,7 +592,6 @@ func TestVisualizationsGetHandler(t *testing.T) {
 	}
 
 	const projectID = "3"
-	testHelper.InitializeLogger()
 	for _, testCase := range tests {
 		mockCtrl := gomock.NewController(t)
 		defer mockCtrl.Finish()
@@ -651,7 +643,6 @@ func TestVisualizationsDeleteHandler(t *testing.T) {
 	}
 
 	const projectID = "3"
-	testHelper.InitializeLogger()
 	for _, testCase := range tests {
 		mockCtrl := gomock.NewController(t)
 		defer mockCtrl.Finish()

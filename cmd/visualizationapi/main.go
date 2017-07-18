@@ -8,15 +8,13 @@ import (
 
 	flag "github.com/spf13/pflag"
 
-	"github.com/kbhonagiri16/visualization-client"
 	"github.com/kbhonagiri16/visualization-client/config"
 	"github.com/kbhonagiri16/visualization-client/http_endpoint"
 	"github.com/kbhonagiri16/visualization-client/http_endpoint/common"
-	"github.com/kbhonagiri16/visualization-client/logging"
+	"visualization-client"
 )
 
 var (
-	logRotate  *log.RotateWriter
 	version    = "UNDEFINED"
 	gitVersion = "UNDEFINED"
 
@@ -34,18 +32,6 @@ func cleanupOnExit() {
 	// such as file descriptor close
 	sigc := make(chan os.Signal, 1)
 	signal.Notify(sigc, syscall.SIGINT, syscall.SIGTERM)
-	go func() {
-		s := <-sigc
-		log.Logger.Info("Caught signal '", s, "' shutting down")
-		// close global descriptor
-		logRotate.Lock.Lock()
-		defer logRotate.Lock.Unlock()
-		err := logRotate.Fp.Close()
-		if err != nil {
-			fmt.Println(err)
-		}
-		os.Exit(0)
-	}()
 }
 
 func main() {
@@ -76,16 +62,6 @@ func main() {
 		exitWithError(errorParsingConfig)
 	}
 	CONF := config.GetConfig()
-
-	// create rotation logger
-	var rotateInitError error
-	logRotate, rotateInitError = log.NewRotateWriter(CONF.LogFilePath)
-	if rotateInitError != nil {
-		exitWithError(rotateInitError)
-	}
-
-	// initialize logger
-	log.InitializeLogger(logRotate, CONF.ConsoleDebug, CONF.LogLevel)
 
 	// initialize database connection
 	databaseInitializationError := visualization.InitializeEngine(
