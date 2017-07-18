@@ -14,6 +14,7 @@
 // grafanaclient provide a simple API to manage Grafana 4.0 DataSources and Dashboards in Go.
 // It's using Grafana 4.0 REST API.
 // Credits https://github.com/adejoux/grafanaclient Alain Dejoux <adejoux@djouxtech.net>.
+
 package visualization
 
 import (
