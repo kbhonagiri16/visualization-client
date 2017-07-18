@@ -7,8 +7,8 @@ import (
 	"strings"
 
 	"github.com/go-xorm/xorm"
-	"github.com/kbhonagiri16/visualization/logging"
-	"github.com/kbhonagiri16/visualization/models"
+	"github.com/kbhonagiri16/visualization-client/logging"
+	//_ "github.com/kbhonagiri16/visualization-client/models"
 	"github.com/satori/go.uuid"
 )
 
@@ -19,13 +19,13 @@ var (
 // DatabaseManager represents what functionality we are expecting from db layer
 type DatabaseManager interface {
 	QueryVisualizationsDashboards(string, string, string, map[string]interface{}) (
-		*map[models.Visualization][]*models.Dashboard, error)
+		*map[Visualization][]*Dashboard, error)
 	CreateVisualizationsWithDashboards(string, string, map[string]interface{},
-		[]string, []string) (*models.Visualization, []*models.Dashboard, error)
-	DeleteVisualization(*models.Visualization) error
-	BulkUpdateDashboard([]*models.Dashboard) error
-	BulkDeleteDashboard([]*models.Dashboard) error
-	GetVisualizationWithDashboardsBySlug(string, string) (*models.Visualization, []*models.Dashboard, error)
+		[]string, []string) (*Visualization, []*Dashboard, error)
+	DeleteVisualization(*Visualization) error
+	BulkUpdateDashboard([]*Dashboard) error
+	BulkDeleteDashboard([]*Dashboard) error
+	GetVisualizationWithDashboardsBySlug(string, string) (*Visualization, []*Dashboard, error)
 }
 
 // InitializeEngine initializes connection to db
@@ -63,7 +63,7 @@ func NewXORMManager() *XORMManager {
 // CreateVisualizationFromParam takes provided arguments and returns created model
 // without storing to db
 func (m *XORMManager) CreateVisualizationFromParam(name, organizationID string,
-	tags map[string]interface{}) (*models.Visualization, error) {
+	tags map[string]interface{}) (*Visualization, error) {
 
 	log.Logger.Debugf("Creating new Visualization entry named '%s'", name)
 
@@ -77,7 +77,7 @@ func (m *XORMManager) CreateVisualizationFromParam(name, organizationID string,
 		return nil, err
 	}
 
-	visualization := &models.Visualization{
+	visualization := &Visualization{
 		Slug:           uuid.NewV4().String(),
 		Name:           name,
 		OrganizationID: organizationID,
@@ -97,26 +97,26 @@ func getVisualizationLookupQuery(slug, name, organizationID string,
 
 	if slug != "" {
 		queryChunks = append(queryChunks, fmt.Sprintf("%s.%s = ?",
-			models.VisualizationTableName, models.VisualizationSlugColumn))
+			VisualizationTableName, VisualizationSlugColumn))
 		queryParams = append(queryParams, slug)
 	}
 
 	if name != "" {
 		queryChunks = append(queryChunks, fmt.Sprintf("%s.%s = ?",
-			models.VisualizationTableName, models.VisualizationNameColumn))
+			VisualizationTableName, VisualizationNameColumn))
 		queryParams = append(queryParams, name)
 	}
 
 	if organizationID != "" {
 		queryChunks = append(queryChunks, fmt.Sprintf("%s.%s = ?",
-			models.VisualizationTableName, models.VisualizationOrgColumn))
+			VisualizationTableName, VisualizationOrgColumn))
 		queryParams = append(queryParams, organizationID)
 	}
 
 	// use JSON_EXTRACT to query json_field
 	for tagName, tagValue := range tags {
 		queryChunks = append(queryChunks, fmt.Sprintf(
-			"JSON_EXTRACT(%s, '$.%s') = ?", models.VisualizationTagsColumn, tagName))
+			"JSON_EXTRACT(%s, '$.%s') = ?", VisualizationTagsColumn, tagName))
 		queryParams = append(queryParams, tagValue)
 	}
 
@@ -128,27 +128,27 @@ func getVisualizationLookupQuery(slug, name, organizationID string,
 
 // QueryVisualizationsDashboards takes name, tags and organizationID and returns matched entries
 func (m *XORMManager) QueryVisualizationsDashboards(slug, name, organizationID string,
-	tags map[string]interface{}) (*map[models.Visualization][]*models.Dashboard, error) {
+	tags map[string]interface{}) (*map[Visualization][]*Dashboard, error) {
 
 	query, queryParams := getVisualizationLookupQuery(slug, name, organizationID, tags)
 
 	var queryResult []struct {
-		Visualization models.Visualization `xorm:"extends"`
-		Dashboard     models.Dashboard     `xorm:"extends"`
+		Visualization Visualization `xorm:"extends"`
+		Dashboard     Dashboard     `xorm:"extends"`
 	}
-	err := m.engine.Table(models.VisualizationTableName).Join(
-		"INNER", models.DashboardTableName,
-		fmt.Sprintf("%s.%s = %s.%s", models.DashboardTableName,
-			models.DashboardVisualizationColumn,
-			models.VisualizationTableName,
-			models.VisualizationIDColumn)).Where(
+	err := m.engine.Table(VisualizationTableName).Join(
+		"INNER", DashboardTableName,
+		fmt.Sprintf("%s.%s = %s.%s", DashboardTableName,
+			DashboardVisualizationColumn,
+			VisualizationTableName,
+			VisualizationIDColumn)).Where(
 		query, queryParams...).Find(&queryResult)
 	if err != nil {
 		log.Logger.Errorf("Error on getting visualizations from db: '%s'", err)
 		return nil, err
 	}
 
-	result := map[models.Visualization][]*models.Dashboard{}
+	result := map[Visualization][]*Dashboard{}
 	for index, queryEntry := range queryResult {
 		result[queryEntry.Visualization] = append(result[queryEntry.Visualization],
 			&queryResult[index].Dashboard)
@@ -157,31 +157,30 @@ func (m *XORMManager) QueryVisualizationsDashboards(slug, name, organizationID s
 	return &result, nil
 }
 
-// GetVisualizationWithDashboardsBySlug returs visualization with all related dashboards
 func (m *XORMManager) GetVisualizationWithDashboardsBySlug(
-	slug, organizationID string) (*models.Visualization, []*models.Dashboard, error) {
+	slug, organizationID string) (*Visualization, []*Dashboard, error) {
 	// TODO(oshyman) fix lookup query
 	noNameProvided := ""
 	noTagsProvided := map[string]interface{}{}
 	query, queryParams := getVisualizationLookupQuery(slug, noNameProvided, organizationID, noTagsProvided)
 
 	var queryResult []struct {
-		Visualization models.Visualization `xorm:"extends"`
-		Dashboard     models.Dashboard     `xorm:"extends"`
+		Visualization Visualization `xorm:"extends"`
+		Dashboard     Dashboard     `xorm:"extends"`
 	}
-	err := m.engine.Table("visualization").Join("INNER", models.DashboardTableName,
-		fmt.Sprintf("%s.%s = %s.%s", models.DashboardTableName,
-			models.DashboardVisualizationColumn,
-			models.VisualizationTableName,
-			models.VisualizationIDColumn)).Where(
+	err := m.engine.Table("visualization").Join("INNER", DashboardTableName,
+		fmt.Sprintf("%s.%s = %s.%s", DashboardTableName,
+			DashboardVisualizationColumn,
+			VisualizationTableName,
+			VisualizationIDColumn)).Where(
 		query, queryParams...).Find(&queryResult)
 	if err != nil {
 		log.Logger.Errorf("Error on getting visualizations from db: '%s'", err)
 		return nil, nil, err
 	}
 
-	var visualizationDatabase *models.Visualization
-	dashboardsDatabase := []*models.Dashboard{}
+	var visualizationDatabase *Visualization
+	dashboardsDatabase := []*Dashboard{}
 	for index := range queryResult {
 		visualizationDatabase = &queryResult[index].Visualization
 		dashboardsDatabase = append(dashboardsDatabase, &queryResult[index].Dashboard)
@@ -189,7 +188,7 @@ func (m *XORMManager) GetVisualizationWithDashboardsBySlug(
 	return visualizationDatabase, dashboardsDatabase, nil
 }
 
-func getBulkDeleteDashboardQuery(dashboards []*models.Dashboard) (string, []interface{}) {
+func getBulkDeleteDashboardQuery(dashboards []*Dashboard) (string, []interface{}) {
 	if len(dashboards) > 0 {
 		// create Query, with ? placeholders for queries. This would protect from
 		// sql injection attacks. Function returns query and parameters to be passed to it
@@ -200,7 +199,7 @@ func getBulkDeleteDashboardQuery(dashboards []*models.Dashboard) (string, []inte
 			queryParams = append(queryParams, dashboard.ID)
 		}
 		query := fmt.Sprintf("DELETE FROM %s WHERE id IN (%s);",
-			models.DashboardTableName, ids)
+			DashboardTableName, ids)
 		log.Logger.Debugf("Bulk Delete dashboard query is '%s'", query)
 		return query, queryParams
 	}
@@ -208,7 +207,7 @@ func getBulkDeleteDashboardQuery(dashboards []*models.Dashboard) (string, []inte
 }
 
 // BulkDeleteDashboard removes multiple Dashboards at once
-func (m *XORMManager) BulkDeleteDashboard(dashboards []*models.Dashboard) error {
+func (m *XORMManager) BulkDeleteDashboard(dashboards []*Dashboard) error {
 	// Xorm does not support bulk delete
 	if len(dashboards) > 0 {
 		query, queryParams := getBulkDeleteDashboardQuery(dashboards)
@@ -219,10 +218,10 @@ func (m *XORMManager) BulkDeleteDashboard(dashboards []*models.Dashboard) error 
 }
 
 //BulkUpdateDashboard updates multiple records at once
-func (m *XORMManager) BulkUpdateDashboard(dashboards []*models.Dashboard) error {
+func (m *XORMManager) BulkUpdateDashboard(dashboards []*Dashboard) error {
 	// Xorm does not provide bulk update
 	if len(dashboards) > 0 {
-		table := m.engine.TableInfo(models.Dashboard{})
+		table := m.engine.TableInfo(Dashboard{})
 		queryParams := []interface{}{}
 		columnDBNames := []string{}
 		columnDBValues := []string{}
@@ -235,7 +234,7 @@ func (m *XORMManager) BulkUpdateDashboard(dashboards []*models.Dashboard) error 
 		columnUpdateString := strings.Join(columnDBValues, ", ")
 
 		amountOfParameters := reflect.ValueOf(
-			&models.Dashboard{}).Elem().NumField()
+			&Dashboard{}).Elem().NumField()
 		singleDashboardParameter := "(" + strings.Repeat(
 			"?, ", amountOfParameters-1) + "?)"
 		renderedParameters := strings.Repeat(
@@ -249,7 +248,7 @@ func (m *XORMManager) BulkUpdateDashboard(dashboards []*models.Dashboard) error 
 			}
 		}
 		query := fmt.Sprintf("INSERT INTO %s (%s) VALUES %s ON DUPLICATE KEY UPDATE %s;",
-			models.DashboardTableName, columnDBNamesString,
+			DashboardTableName, columnDBNamesString,
 			renderedParameters, columnUpdateString)
 		log.Logger.Debugf("Bulk Update dashboard query is '%s'", query)
 
@@ -260,9 +259,9 @@ func (m *XORMManager) BulkUpdateDashboard(dashboards []*models.Dashboard) error 
 }
 
 // DeleteVisualization removes visualization model from db
-func (m *XORMManager) DeleteVisualization(visualization *models.Visualization) error {
+func (m *XORMManager) DeleteVisualization(visualization *Visualization) error {
 	if visualization != nil {
-		_, err := m.engine.Id(visualization.ID).Delete(&models.Visualization{})
+		_, err := m.engine.Id(visualization.ID).Delete(&Visualization{})
 		return err
 	}
 	return nil
@@ -272,7 +271,7 @@ func (m *XORMManager) DeleteVisualization(visualization *models.Visualization) e
 // in one transaction
 func (m *XORMManager) CreateVisualizationsWithDashboards(name, organizationID string,
 	tags map[string]interface{}, dashboardNames, renderedTemplates []string) (
-	*models.Visualization, []*models.Dashboard, error) {
+	*Visualization, []*Dashboard, error) {
 
 	// validate data for visualization
 	visualization, err := m.CreateVisualizationFromParam(name, organizationID, tags)
@@ -293,9 +292,9 @@ func (m *XORMManager) CreateVisualizationsWithDashboards(name, organizationID st
 		return nil, nil, err
 	}
 
-	var dashboards []*models.Dashboard
+	var dashboards []*Dashboard
 	for index, name := range dashboardNames {
-		dashboards = append(dashboards, &models.Dashboard{
+		dashboards = append(dashboards, &Dashboard{
 			ID:               uuid.NewV4().String(),
 			Visualization:    visualization.ID,
 			Name:             name,

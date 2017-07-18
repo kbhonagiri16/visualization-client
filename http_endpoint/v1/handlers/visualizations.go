@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"text/template"
 
-	"github.com/kbhonagiri16/visualization/http_endpoint/common"
-	"github.com/kbhonagiri16/visualization/logging"
-	"github.com/kbhonagiri16/visualization/models"
+	"github.com/kbhonagiri16/visualization-client"
+	"github.com/kbhonagiri16/visualization-client/http_endpoint/common"
+	"github.com/kbhonagiri16/visualization-client/logging"
 	"github.com/ulule/deepcopier"
 )
 

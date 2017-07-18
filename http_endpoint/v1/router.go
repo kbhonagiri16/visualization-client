@@ -5,10 +5,10 @@ import (
 	"github.com/pressly/chi"
 	"net/http"
 
-	"github.com/kbhonagiri16/visualization/http_endpoint/authentication"
-	"github.com/kbhonagiri16/visualization/http_endpoint/common"
-	v1handlers "github.com/kbhonagiri16/visualization/http_endpoint/v1/handlers"
-	"github.com/kbhonagiri16/visualization/logging"
+	"github.com/kbhonagiri16/visualization-client/http_endpoint/authentication"
+	"github.com/kbhonagiri16/visualization-client/http_endpoint/common"
+	v1handlers "github.com/kbhonagiri16/visualization-client/http_endpoint/v1/handlers"
+	"github.com/kbhonagiri16/visualization-client/logging"
 )
 
 const adminAPIPrefix = "/admin"

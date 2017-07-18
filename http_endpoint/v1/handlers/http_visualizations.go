@@ -6,9 +6,9 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/kbhonagiri16/visualization/http_endpoint/common"
-	v1JsonSchema "github.com/kbhonagiri16/visualization/http_endpoint/v1/json_schemas"
-	"github.com/kbhonagiri16/visualization/logging"
+	"github.com/kbhonagiri16/visualization-client/http_endpoint/common"
+	v1JsonSchema "github.com/kbhonagiri16/visualization-client/http_endpoint/v1/json_schemas"
+	"github.com/kbhonagiri16/visualization-client/logging"
 	"github.com/pressly/chi"
 	"github.com/satori/go.uuid"
 	"github.com/xeipuuv/gojsonschema"

@@ -1,7 +1,7 @@
 package common
 
 import (
-	"github.com/kbhonagiri16/visualization"
+	"github.com/kbhonagiri16/visualization-client"
 	"time"
 )
 
