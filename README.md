@@ -1,4 +1,4 @@
-Platform Visibility :: Visualization API
+Platform Visibility :: Visualization Client
 =========================================
 
 Platform visibility component for management Grafana in multitenant way in

@@ -1,27 +1,16 @@
 language: go
 
 go:
-  - 1.8.3
+  - 1.7.x
+  - 1.8.x
+  - tip
 
-services:
-  - docker
-
-before_install:
-  - make init
+install:
+  - go get -v github.com/golang/lint/golint
+  - go get -d -t -v ./...
+  - go build -v ./...
 
 script:
-  - make stylecheck
-  - make lint
-  - make test
-  - make build-all
-  - make test-integration
-  - make package-init
-  - make package
-  - make package
-  - make docker
-
-after_success:
-  - if [ "$TRAVIS_BRANCH" == "master" ]; then
-    docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
-    make docker-push;
-    fi
+  - go vet ./...
+  - $HOME/gopath/bin/golint .
+  - go test -v ./...
