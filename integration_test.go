@@ -8,10 +8,9 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"visualization-client"
 )
 
-var ds = visualization.DataSource{Name: "testme",
+var ds = DataSource{Name: "testme",
 	Type:      "influxdb",
 	Access:    "proxy",
 	URL:       "http://localhost:8086",
@@ -20,16 +19,16 @@ var ds = visualization.DataSource{Name: "testme",
 	Database:  "test",
 	IsDefault: true}
 
-var usr = visualization.AdminCreateUser{Email: "test@me.com",
+var usr = AdminCreateUser{Email: "test@me.com",
 	Login:    "testme",
 	Name:     "testme",
 	Password: "test"}
 
-var org = visualization.Org{Name: "testme"}
+var org = Org{Name: "testme"}
 
-var org_list = visualization.OrgList{ID: 1, Name: "Main Org."}
+var org_list = OrgList{ID: 1, Name: "Main Org."}
 
-var org_user = visualization.CreateOrganizationUser{Email: "test@me.com",
+var org_user = CreateOrganizationUser{Email: "test@me.com",
 	Login:    "test",
 	Name:     "test",
 	Password: "test"}
@@ -48,14 +47,14 @@ func getenv(key string) string {
 }
 
 func Test_DoLogon(t *testing.T) {
-	session, _ := visualization.NewSession(user, pass, url)
+	session, _ := NewSession(user, pass, url)
 	err := session.DoLogon()
 	assert.Nil(t, err, fmt.Sprintf("We are expecting no error and got one when Login: %s", err))
 }
 
 func Test_CreateDataSource(t *testing.T) {
 	t.Skip("TODO(illia) fix it later")
-	session, _ := visualization.NewSession(user, pass, url)
+	session, _ := NewSession(user, pass, url)
 	err := session.DoLogon()
 	assert.Nil(t, err, fmt.Sprintf("We are expecting no error and got one when Login: %s", err))
 	err = session.CreateDataSource(ds)
@@ -64,7 +63,7 @@ func Test_CreateDataSource(t *testing.T) {
 
 func Test_GetDataSourceList(t *testing.T) {
 	t.Skip("TODO(illia) fix it later")
-	session, _ := visualization.NewSession(user, pass, url)
+	session, _ := NewSession(user, pass, url)
 	err := session.DoLogon()
 	assert.Nil(t, err, fmt.Sprintf("We are expecting no error and got one when Login: %s", err))
 	dslist, err := session.GetDataSourceList()
@@ -81,7 +80,7 @@ func Test_GetDataSourceList(t *testing.T) {
 
 func Test_GetDataSourceListID(t *testing.T) {
 	t.Skip("TODO(illia) fix it later")
-	session, _ := visualization.NewSession(user, pass, url)
+	session, _ := NewSession(user, pass, url)
 	err := session.DoLogon()
 	assert.Nil(t, err, fmt.Sprintf("We are expecting no error and got one when Login: %s", err))
 	dslist, err := session.GetDataSourceList()
@@ -97,7 +96,7 @@ func Test_GetDataSourceListID(t *testing.T) {
 
 func Test_GetDataSourceName(t *testing.T) {
 	t.Skip("TODO(illia) fix it later")
-	session, _ := visualization.NewSession(user, pass, url)
+	session, _ := NewSession(user, pass, url)
 	err := session.DoLogon()
 	assert.Nil(t, err, fmt.Sprintf("We are expecting no error and got one when Login: %s", err))
 
@@ -108,7 +107,7 @@ func Test_GetDataSourceName(t *testing.T) {
 
 func Test_DeleteDataSource(t *testing.T) {
 	t.Skip("TODO(illia) fix it later")
-	session, _ := visualization.NewSession(user, pass, url)
+	session, _ := NewSession(user, pass, url)
 	err := session.DoLogon()
 	assert.Nil(t, err, fmt.Sprintf("We are expecting no error and got one when Login: %s", err))
 
@@ -120,7 +119,7 @@ func Test_DeleteDataSource(t *testing.T) {
 }
 
 func Test_CreateUser(t *testing.T) {
-	session, _ := visualization.NewSession(user, pass, url)
+	session, _ := NewSession(user, pass, url)
 	err := session.DoLogon()
 	assert.Nil(t, err, fmt.Sprintf("We are expecting no error and got one when Login: %s", err))
 	err = session.CreateUser(usr)
@@ -128,7 +127,7 @@ func Test_CreateUser(t *testing.T) {
 }
 
 func Test_GetUsers(t *testing.T) {
-	session, _ := visualization.NewSession(user, pass, url)
+	session, _ := NewSession(user, pass, url)
 	err := session.DoLogon()
 	assert.Nil(t, err, fmt.Sprintf("We are expecting no error and got one when Login: %s", err))
 	usrlist, err := session.GetUsers()
@@ -144,7 +143,7 @@ func Test_GetUsers(t *testing.T) {
 }
 
 func Test_GetUserID(t *testing.T) {
-	session, _ := visualization.NewSession(user, pass, url)
+	session, _ := NewSession(user, pass, url)
 	err := session.DoLogon()
 	assert.Nil(t, err, fmt.Sprintf("We are expecting no error and got one when Login: %s", err))
 	usrlist, err := session.GetUsers()
@@ -159,7 +158,7 @@ func Test_GetUserID(t *testing.T) {
 }
 
 func Test_DeleteUser(t *testing.T) {
-	session, _ := visualization.NewSession(user, pass, url)
+	session, _ := NewSession(user, pass, url)
 	err := session.DoLogon()
 	assert.Nil(t, err, fmt.Sprintf("We are expecting no error and got one when Login: %s", err))
 
@@ -175,7 +174,7 @@ func Test_DeleteUser(t *testing.T) {
 }
 
 func Test_CreateOrg(t *testing.T) {
-	session, _ := visualization.NewSession(user, pass, url)
+	session, _ := NewSession(user, pass, url)
 	err := session.DoLogon()
 	assert.Nil(t, err, fmt.Sprintf("We are expecting no error and got one when Login: %s", err))
 	_, err = session.CreateOrg(org)
@@ -183,7 +182,7 @@ func Test_CreateOrg(t *testing.T) {
 }
 
 func Test_GetOrCreateOrgByName(t *testing.T) {
-	session, _ := visualization.NewSession(user, pass, url)
+	session, _ := NewSession(user, pass, url)
 	err := session.DoLogon()
 	assert.Nil(t, err, fmt.Sprintf("We are expecting no error and got one when Login: %s", err))
 	_, err = session.GetOrCreateOrgByName("test_name")
@@ -191,7 +190,7 @@ func Test_GetOrCreateOrgByName(t *testing.T) {
 }
 
 func Test_GetOrgs(t *testing.T) {
-	session, _ := visualization.NewSession(user, pass, url)
+	session, _ := NewSession(user, pass, url)
 	err := session.DoLogon()
 	assert.Nil(t, err, fmt.Sprintf("We are expecting no error and got one when Login: %s", err))
 	orglist, err := session.GetOrganizations()
@@ -207,7 +206,7 @@ func Test_GetOrgs(t *testing.T) {
 }
 
 func Test_GetOrgID(t *testing.T) {
-	session, _ := visualization.NewSession(user, pass, url)
+	session, _ := NewSession(user, pass, url)
 	err := session.DoLogon()
 	assert.Nil(t, err, fmt.Sprintf("We are expecting no error and got one when Login: %s", err))
 
@@ -223,7 +222,7 @@ func Test_GetOrgID(t *testing.T) {
 }
 
 func Test_CreateOrgUser(t *testing.T) {
-	session, _ := visualization.NewSession(user, pass, url)
+	session, _ := NewSession(user, pass, url)
 	err := session.DoLogon()
 	assert.Nil(t, err, fmt.Sprintf("We are expecting no error and got one when Login: %s", err))
 
@@ -246,7 +245,7 @@ func Test_CreateOrgUser(t *testing.T) {
 }
 
 func Test_GetOrgUsers(t *testing.T) {
-	session, _ := visualization.NewSession(user, pass, url)
+	session, _ := NewSession(user, pass, url)
 	err := session.DoLogon()
 	assert.Nil(t, err, fmt.Sprintf("We are expecting no error and got one when Login: %s", err))
 
@@ -263,7 +262,7 @@ func Test_GetOrgUsers(t *testing.T) {
 }
 
 func Test_DeleteOrgUser(t *testing.T) {
-	session, _ := visualization.NewSession(user, pass, url)
+	session, _ := NewSession(user, pass, url)
 	err := session.DoLogon()
 	assert.Nil(t, err, fmt.Sprintf("We are expecting no error and got one when Login: %s", err))
 
@@ -286,7 +285,7 @@ func Test_DeleteOrgUser(t *testing.T) {
 }
 
 func Test_DeleteOrg(t *testing.T) {
-	session, _ := visualization.NewSession(user, pass, url)
+	session, _ := NewSession(user, pass, url)
 	err := session.DoLogon()
 	assert.Nil(t, err, fmt.Sprintf("We are expecting no error and got one when Login: %s", err))
 
