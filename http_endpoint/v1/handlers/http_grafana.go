@@ -7,9 +7,9 @@ import (
 	"regexp"
 	"strconv"
 
-	"github.com/kbhonagiri16/visualization-client"
-	"github.com/kbhonagiri16/visualization-client/http_endpoint/common"
 	"github.com/pressly/chi"
+	"visualization-client"
+	"visualization-client/http_endpoint/common"
 )
 
 var emailValid = regexp.MustCompile(`^[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,4}$`)

@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"text/template"
 
-	"github.com/kbhonagiri16/visualization-client"
-	"github.com/kbhonagiri16/visualization-client/http_endpoint/common"
 	"github.com/ulule/deepcopier"
+	"visualization-client"
+	"visualization-client/http_endpoint/common"
 )
 
 // V1Visualizations implements part of handler interface

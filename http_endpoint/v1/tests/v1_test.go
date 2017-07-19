@@ -8,14 +8,14 @@ import (
 	"time"
 
 	"github.com/golang/mock/gomock"
-	"github.com/kbhonagiri16/visualization-client"
-	"github.com/kbhonagiri16/visualization-client/http_endpoint"
-	"github.com/kbhonagiri16/visualization-client/http_endpoint/common"
-	"github.com/kbhonagiri16/visualization-client/http_endpoint/common/mock"
-	"github.com/kbhonagiri16/visualization-client/http_endpoint/common/tests"
-	"github.com/kbhonagiri16/visualization-client/http_endpoint/v1"
 	"github.com/stretchr/testify/assert"
-	"visualization/mock"
+	"visualization-client"
+	"visualization-client/http_endpoint"
+	"visualization-client/http_endpoint/common"
+	"visualization-client/http_endpoint/common/mock"
+	"visualization-client/http_endpoint/common/tests"
+	"visualization-client/http_endpoint/v1"
+	"visualization-client/mock"
 )
 
 const openstackTokenHeaderName = "X-OpenStack-Auth-Token"
@@ -109,7 +109,7 @@ func TestAuthHandler(t *testing.T) {
 		defer mockCtrl.Finish()
 
 		clientContainer := testHelper.MockClientContainer(mockCtrl)
-		mockedOpenstack := clientContainer.Openstack.(*mock_openstack.MockClientInterface)
+		mockedOpenstack := clientContainer.Openstack.(*mock_visualization_client.MockClientInterface)
 		mockedOpenstack.EXPECT().ValidateToken(testCase.token).Return(
 			testCase.tokenValid, nil)
 		mockedClock := mock_common.NewMockClockInterface(mockCtrl)
@@ -118,7 +118,7 @@ func TestAuthHandler(t *testing.T) {
 				testCase.tokenInfo, nil)
 			orgID := &visualization.OrgID{}
 			orgID.ID = testCase.returnID
-			clientContainer.Grafana.(*mock_grafanaclient.MockSessionInterface).EXPECT().GetOrCreateOrgByName(testCase.tokenInfo.ProjectName+"-"+testCase.tokenInfo.ProjectID).Return(orgID, nil)
+			clientContainer.Grafana.(*mock_visualization_client.MockSessionInterface).EXPECT().GetOrCreateOrgByName(testCase.tokenInfo.ProjectName+"-"+testCase.tokenInfo.ProjectID).Return(orgID, nil)
 			mockedClock.EXPECT().Now().Return(parsedTime.Add(
 				-v1Api.TokenIssueHours * time.Hour))
 		}

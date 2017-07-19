@@ -6,11 +6,11 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/kbhonagiri16/visualization-client/http_endpoint/common"
-	v1JsonSchema "github.com/kbhonagiri16/visualization-client/http_endpoint/v1/json_schemas"
 	"github.com/pressly/chi"
 	"github.com/satori/go.uuid"
 	"github.com/xeipuuv/gojsonschema"
+	"visualization-client/http_endpoint/common"
+	v1JsonSchema "visualization-client/http_endpoint/v1/json_schemas"
 )
 
 const visualizationNameParam = "name"

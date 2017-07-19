@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"github.com/auth0/go-jwt-middleware"
 	"github.com/dgrijalva/jwt-go"
-	"github.com/kbhonagiri16/visualization-client/http_endpoint/common"
 	"net/http"
 	"time"
+	"visualization-client/http_endpoint/common"
 )
 
 const contextJWTProperty = "AuthToken"

@@ -3,20 +3,20 @@ package testHelper
 import (
 	"fmt"
 	"github.com/golang/mock/gomock"
-	"github.com/kbhonagiri16/visualization-client/http_endpoint/authentication"
-	"github.com/kbhonagiri16/visualization-client/http_endpoint/common"
 	"net/http"
 	"time"
-	"visualization/mock"
+	"visualization-client/http_endpoint/authentication"
+	"visualization-client/http_endpoint/common"
+	"visualization-client/mock"
 )
 
 const tokenHeaderName = "Authorization"
 
 /*MockClientContainer returns struct populated with all mocks required*/
 func MockClientContainer(mockCtrl *gomock.Controller) *common.ClientContainer {
-	mockedOpenstack := mock_openstack.NewMockClientInterface(mockCtrl)
-	mockedGrafana := mock_grafanaclient.NewMockSessionInterface(mockCtrl)
-	mockedDatabaseManager := mock_database.NewMockDatabaseManager(mockCtrl)
+	mockedOpenstack := mock_visualization_client.NewMockClientInterface(mockCtrl)
+	mockedGrafana := mock_visualization_client.NewMockSessionInterface(mockCtrl)
+	mockedDatabaseManager := mock_visualization_client.NewMockDatabaseManager(mockCtrl)
 	return &common.ClientContainer{mockedOpenstack, mockedGrafana, mockedDatabaseManager}
 }
 

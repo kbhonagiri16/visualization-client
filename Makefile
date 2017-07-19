@@ -26,7 +26,6 @@ init:
 	$(GO) get github.com/mitchellh/mapstructure
 	$(GO) get github.com/golang/mock/gomock
 	$(GO) get github.com/golang/mock/mockgen
-	$(GO) get github.com/kbhonagiri16/visualization-client
 	$(GO) get github.com/xeipuuv/gojsonschema
 	$(GO) get github.com/satori/go.uuid
 	$(GO) get -u github.com/ulule/deepcopier
@@ -69,7 +68,7 @@ test-integration:
 	sleep 10
 	curl -v -X POST -H "Content-Type: applciation/json" -d '{"name":"PV Service", "login":"pv_service", "password":"123123"}' http://admin:admin@localhost:3000/api/admin/users
 	curl -v -X PUT -H "Content-Type: applciation/json" -d '{"isGrafanaAdmin":true}' http://admin:admin@localhost:3000/api/admin/users/2/permissions
-	GRAFANA_URL=http://0.0.0.0:3000 GRAFANA_USER=pv_service GRAFANA_PASS=123123 $(GO) test -v visualization-client/ -tags=integration	
+	GRAFANA_URL=http://0.0.0.0:3000 GRAFANA_USER=pv_service GRAFANA_PASS=123123 $(GO) test -v visualization-client -tags=integration	
 	docker rm --force grafana-integration-test
 
 build: fmt lint

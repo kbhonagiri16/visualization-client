@@ -10,12 +10,12 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/kbhonagiri16/visualization-client"
-	"github.com/kbhonagiri16/visualization-client/http_endpoint"
-	"github.com/kbhonagiri16/visualization-client/http_endpoint/common/mock"
-	"github.com/kbhonagiri16/visualization-client/http_endpoint/common/tests"
-	"github.com/kbhonagiri16/visualization-client/http_endpoint/v1"
-	"visualization/mock"
+	"visualization-client"
+	"visualization-client/http_endpoint"
+	"visualization-client/http_endpoint/common/mock"
+	"visualization-client/http_endpoint/common/tests"
+	"visualization-client/http_endpoint/v1"
+	"visualization-client/mock"
 )
 
 const ID = 1
@@ -673,7 +673,7 @@ func TestGrafanaUserGet(t *testing.T) {
 		defer mockCtrl.Finish()
 
 		clientContainer := testHelper.MockClientContainer(mockCtrl)
-		mockedGrafana := clientContainer.Grafana.(*mock_grafanaclient.MockSessionInterface)
+		mockedGrafana := clientContainer.Grafana.(*mock_visualization_client.MockSessionInterface)
 		mockedGrafana.EXPECT().DoLogon()
 		mockedGrafana.EXPECT().GetUsers().Return(testCase.expectedResult, nil)
 		handler := v1Api.V1Handler{}
@@ -701,7 +701,7 @@ func TestGrafanaUserGetID(t *testing.T) {
 		defer mockCtrl.Finish()
 
 		clientContainer := testHelper.MockClientContainer(mockCtrl)
-		mockedGrafana := clientContainer.Grafana.(*mock_grafanaclient.MockSessionInterface)
+		mockedGrafana := clientContainer.Grafana.(*mock_visualization_client.MockSessionInterface)
 		mockedGrafana.EXPECT().DoLogon()
 		mockedGrafana.EXPECT().GetUserID(ID).Return(
 			testCase.expectedResult, nil)
@@ -730,7 +730,7 @@ func TestGrafanaUserCreate(t *testing.T) {
 		defer mockCtrl.Finish()
 
 		clientContainer := testHelper.MockClientContainer(mockCtrl)
-		mockedGrafana := clientContainer.Grafana.(*mock_grafanaclient.MockSessionInterface)
+		mockedGrafana := clientContainer.Grafana.(*mock_visualization_client.MockSessionInterface)
 
 		mockedGrafana.EXPECT().DoLogon()
 		mockedGrafana.EXPECT().CreateUser(testCase.input)
@@ -756,7 +756,7 @@ func TestGrafanaUserDelete(t *testing.T) {
 		defer mockCtrl.Finish()
 
 		clientContainer := testHelper.MockClientContainer(mockCtrl)
-		mockedGrafana := clientContainer.Grafana.(*mock_grafanaclient.MockSessionInterface)
+		mockedGrafana := clientContainer.Grafana.(*mock_visualization_client.MockSessionInterface)
 		mockedGrafana.EXPECT().DoLogon()
 		mockedGrafana.EXPECT().DeleteUser(ID).Return(nil)
 		handler := v1Api.V1Handler{}
@@ -783,7 +783,7 @@ func TestGrafanaOrganizationGet(t *testing.T) {
 		defer mockCtrl.Finish()
 
 		clientContainer := testHelper.MockClientContainer(mockCtrl)
-		mockedGrafana := clientContainer.Grafana.(*mock_grafanaclient.MockSessionInterface)
+		mockedGrafana := clientContainer.Grafana.(*mock_visualization_client.MockSessionInterface)
 		mockedGrafana.EXPECT().DoLogon()
 		mockedGrafana.EXPECT().GetOrganizations().Return(
 			testCase.expectedResult, nil)
@@ -812,7 +812,7 @@ func TestGrafanaOrganizationGetID(t *testing.T) {
 		defer mockCtrl.Finish()
 
 		clientContainer := testHelper.MockClientContainer(mockCtrl)
-		mockedGrafana := clientContainer.Grafana.(*mock_grafanaclient.MockSessionInterface)
+		mockedGrafana := clientContainer.Grafana.(*mock_visualization_client.MockSessionInterface)
 		mockedGrafana.EXPECT().DoLogon()
 		mockedGrafana.EXPECT().GetOrganizationID(ID).Return(
 			testCase.expectedResult, nil)
@@ -841,7 +841,7 @@ func TestGrafanaOrganizationCreate(t *testing.T) {
 		defer mockCtrl.Finish()
 
 		clientContainer := testHelper.MockClientContainer(mockCtrl)
-		mockedGrafana := clientContainer.Grafana.(*mock_grafanaclient.MockSessionInterface)
+		mockedGrafana := clientContainer.Grafana.(*mock_visualization_client.MockSessionInterface)
 
 		mockedGrafana.EXPECT().DoLogon()
 		mockedGrafana.EXPECT().CreateOrganization(testCase.input)
@@ -867,7 +867,7 @@ func TestGrafanaOrgDelete(t *testing.T) {
 		defer mockCtrl.Finish()
 
 		clientContainer := testHelper.MockClientContainer(mockCtrl)
-		mockedGrafana := clientContainer.Grafana.(*mock_grafanaclient.MockSessionInterface)
+		mockedGrafana := clientContainer.Grafana.(*mock_visualization_client.MockSessionInterface)
 		mockedGrafana.EXPECT().DoLogon()
 		mockedGrafana.EXPECT().DeleteOrganization(ID).Return(nil)
 		handler := v1Api.V1Handler{}
@@ -894,7 +894,7 @@ func TestGrafanaOrgUserGet(t *testing.T) {
 		defer mockCtrl.Finish()
 
 		clientContainer := testHelper.MockClientContainer(mockCtrl)
-		mockedGrafana := clientContainer.Grafana.(*mock_grafanaclient.MockSessionInterface)
+		mockedGrafana := clientContainer.Grafana.(*mock_visualization_client.MockSessionInterface)
 		mockedGrafana.EXPECT().DoLogon()
 		mockedGrafana.EXPECT().GetOrganizationUsers(ID).Return(
 			testCase.expectedResult, nil)
@@ -923,7 +923,7 @@ func TestGrafanaOrgUserCreate(t *testing.T) {
 		defer mockCtrl.Finish()
 
 		clientContainer := testHelper.MockClientContainer(mockCtrl)
-		mockedGrafana := clientContainer.Grafana.(*mock_grafanaclient.MockSessionInterface)
+		mockedGrafana := clientContainer.Grafana.(*mock_visualization_client.MockSessionInterface)
 
 		mockedGrafana.EXPECT().DoLogon()
 		mockedGrafana.EXPECT().CreateOrganizationUser(ID, testCase.input)
@@ -950,7 +950,7 @@ func TestGrafanaOrgUserDelete(t *testing.T) {
 
 		OrgID := 1
 		clientContainer := testHelper.MockClientContainer(mockCtrl)
-		mockedGrafana := clientContainer.Grafana.(*mock_grafanaclient.MockSessionInterface)
+		mockedGrafana := clientContainer.Grafana.(*mock_visualization_client.MockSessionInterface)
 		mockedGrafana.EXPECT().DoLogon()
 		mockedGrafana.EXPECT().DeleteOrganizationUser(ID, OrgID).Return(nil)
 		handler := v1Api.V1Handler{}

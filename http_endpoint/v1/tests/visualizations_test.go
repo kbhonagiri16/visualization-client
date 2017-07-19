@@ -11,15 +11,14 @@ import (
 	"testing"
 
 	"github.com/golang/mock/gomock"
-	visualization_client "github.com/kbhonagiri16/visualization-client"
-	"github.com/kbhonagiri16/visualization-client/http_endpoint"
-	"github.com/kbhonagiri16/visualization-client/http_endpoint/common"
-	"github.com/kbhonagiri16/visualization-client/http_endpoint/common/tests"
-	"github.com/kbhonagiri16/visualization-client/http_endpoint/v1/handlers"
 	"github.com/stretchr/testify/assert"
-
-	"visualization/http_endpoint/common/mock"
-	"visualization/mock"
+	visualization_client "visualization-client"
+	"visualization-client/http_endpoint"
+	"visualization-client/http_endpoint/common"
+	"visualization-client/http_endpoint/common/mock"
+	"visualization-client/http_endpoint/common/tests"
+	"visualization-client/http_endpoint/v1/handlers"
+	"visualization-client/mock"
 )
 
 func TestVisualizationsGetTagsAndName(t *testing.T) {
@@ -596,7 +595,7 @@ func TestVisualizationsGetHandler(t *testing.T) {
 		mockCtrl := gomock.NewController(t)
 		defer mockCtrl.Finish()
 		clientContainer := testHelper.MockClientContainer(mockCtrl)
-		mockedDatabaseManager := clientContainer.DatabaseManager.(*mock_database.MockDatabaseManager)
+		mockedDatabaseManager := clientContainer.DatabaseManager.(*mock_visualization_client.MockDatabaseManager)
 		if testCase.expectDBError {
 			mockedDatabaseManager.EXPECT().QueryVisualizationsDashboards("", testCase.name, projectID, testCase.tags).Return(nil, errors.New("test"))
 		} else {
@@ -647,8 +646,8 @@ func TestVisualizationsDeleteHandler(t *testing.T) {
 		mockCtrl := gomock.NewController(t)
 		defer mockCtrl.Finish()
 		clientContainer := testHelper.MockClientContainer(mockCtrl)
-		mockedDatabaseManager := clientContainer.DatabaseManager.(*mock_database.MockDatabaseManager)
-		mockedGrafana := clientContainer.Grafana.(*mock_grafanaclient.MockSessionInterface)
+		mockedDatabaseManager := clientContainer.DatabaseManager.(*mock_visualization_client.MockDatabaseManager)
+		mockedGrafana := clientContainer.Grafana.(*mock_visualization_client.MockSessionInterface)
 		mockedDatabaseManager.EXPECT().GetVisualizationWithDashboardsBySlug(testCase.visualizationSlug, projectID).Return(testCase.databaseVisualization, testCase.databaseDashboards, nil)
 
 		if testCase.slugFoundInDB {
