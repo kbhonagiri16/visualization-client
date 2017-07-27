@@ -75,7 +75,7 @@ func (v *VisualizationClient) headerRequest(request *http.Request, withAuth bool
 	return request
 }
 
-// httpRequest handle the request to Grafana server.
+// httpRequest handles the request to server.
 //It returns the response body and a error if something went wrong
 func (v *VisualizationClient) httpRequest(method string, url string, body io.Reader, withAuth bool) (result io.Reader, err error) {
 	v.doRequest(withAuth)
