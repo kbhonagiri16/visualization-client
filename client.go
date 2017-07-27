@@ -184,6 +184,21 @@ func (v *VisualizationClient) GetUsers() (user []User, err error) {
 	return
 }
 
+// GetUserName returns user by Name
+func (v *VisualizationClient) GetUserName(name string) (user User, err error) {
+	users, err := v.GetUsers()
+	if err != nil {
+		return
+	}
+
+	for _, elem := range users {
+		if elem.Name == name {
+			user = elem
+		}
+	}
+	return
+}
+
 // GetUserID Get User by ID
 func (v *VisualizationClient) GetUserID(ID string) (user User, err error) {
 	reqURL := fmt.Sprintf("%s/admin/users/%s", v.url, ID)
