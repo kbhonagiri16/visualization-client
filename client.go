@@ -27,6 +27,7 @@ type VisualizationClient struct {
 	url            string
 	client         *http.Client
 	token          AuthToken
+	JWT            string
 	openstackToken string
 }
 
@@ -38,7 +39,12 @@ func NewVisualizationClient(url string, client http.Client, openstackToken strin
 
 // reIssue this method reissues the token
 func (v *VisualizationClient) reIssue() error {
-	_, err := v.Authenticate()
+	token, err := v.Authenticate()
+	if err != nil {
+		return err
+	}
+	v.token = token
+	v.JWT = token.JWT
 	return err
 }
 
@@ -69,7 +75,7 @@ func (v *VisualizationClient) headerRequest(request *http.Request, withAuth bool
 		if v.token == (AuthToken{}) {
 			v.reIssue()
 		}
-		bearer := fmt.Sprintf("Bearer %v", v.token)
+		bearer := fmt.Sprintf("Bearer %v", v.JWT)
 		request.Header.Add("Authorization", bearer)
 	}
 	return request
