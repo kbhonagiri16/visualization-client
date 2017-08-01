@@ -266,7 +266,7 @@ func (v *VisualizationClient) GetOrganizations() (org []Org, err error) {
 }
 
 // GetOrganizationID Get Org by ID
-func (v *VisualizationClient) GetOrganizationID(OrgID string) (orgID Org, err error) {
+func (v *VisualizationClient) GetOrganizationID(OrgID string) (org Org, err error) {
 	reqURL := fmt.Sprintf("%s/admin/organizations/%s", v.url, OrgID)
 	response, err := v.httpRequest("GET", reqURL, nil, false)
 	if err != nil {
@@ -274,7 +274,7 @@ func (v *VisualizationClient) GetOrganizationID(OrgID string) (orgID Org, err er
 	}
 
 	dec := json.NewDecoder(response)
-	err = dec.Decode(&orgID)
+	err = dec.Decode(&org)
 
 	return
 }
