@@ -27,6 +27,7 @@ type VisualizationClient struct {
 	url            string
 	client         *http.Client
 	token          AuthToken
+	JWT            string
 	openstackToken string
 }
 
@@ -38,7 +39,11 @@ func NewVisualizationClient(url string, client http.Client, openstackToken strin
 
 // reIssue this method reissues the token
 func (v *VisualizationClient) reIssue() error {
-	_, err := v.Authenticate()
+	token, err := v.Authenticate()
+	if err != nil {
+		return err
+	}
+	v.JWT = token.JWT
 	return err
 }
 
@@ -69,7 +74,7 @@ func (v *VisualizationClient) headerRequest(request *http.Request, withAuth bool
 		if v.token == (AuthToken{}) {
 			v.reIssue()
 		}
-		bearer := fmt.Sprintf("Bearer %v", v.token)
+		bearer := fmt.Sprintf("Bearer %v", v.JWT)
 		request.Header.Add("Authorization", bearer)
 	}
 	return request
@@ -106,6 +111,11 @@ func (v *VisualizationClient) httpRequest(method string, url string, body io.Rea
 			Message.code = "404"
 			Message.message = "ID not found"
 			Message.description = "Provided ID to Delete/Get was not found"
+			return result, Message
+		case 401:
+			Message.code = "401"
+			Message.message = "UnAuthorized"
+			Message.description = "request not authorized"
 			return result, Message
 		}
 
@@ -151,12 +161,14 @@ type User struct {
 	Name     string `json:"name"`
 	Login    string `json:"login"`
 	Password string `json:"password"`
+	OrgID    string `json:"orgID"`
 }
 
 // Authenticate gets a openstack token
 func (v *VisualizationClient) Authenticate() (token AuthToken, err error) {
 	reqURL := v.url + "/auth/openstack"
 	response, err := v.httpRequest("POST", reqURL, nil, true)
+
 	if err != nil {
 		return
 	}
@@ -221,19 +233,23 @@ func (v *VisualizationClient) CreateUser(user User) (userDetails User, err error
 		return
 	}
 
-	response, err := v.httpRequest("POST", reqURL, bytes.NewBuffer(jsonStr), false)
+	_, err = v.httpRequest("POST", reqURL, bytes.NewBuffer(jsonStr), false)
 	if err != nil {
 		return
 	}
-	dec := json.NewDecoder(response)
-	err = dec.Decode(&userDetails)
+
+	// Get user details by name
+	userDetails, err = v.GetUserName(user.Name)
+	if err != nil {
+		return
+	}
 
 	return
 }
 
 // DeleteUser Delete the user with given id
 func (v *VisualizationClient) DeleteUser(ID string) (user User, err error) {
-	reqURL := fmt.Sprintf("%s/users/%s", v.url, ID)
+	reqURL := fmt.Sprintf("%s/admin/users/%s", v.url, ID)
 
 	response, err := v.httpRequest("DELETE", reqURL, nil, false)
 	if err != nil {
@@ -259,8 +275,23 @@ func (v *VisualizationClient) GetOrganizations() (org []Org, err error) {
 	return
 }
 
+// GetOrganizationName returns Organization by Name
+func (v *VisualizationClient) GetOrganizationName(name string) (org Org, err error) {
+	orgs, err := v.GetOrganizations()
+	if err != nil {
+		return
+	}
+
+	for _, elem := range orgs {
+		if elem.Name == name {
+			org = elem
+		}
+	}
+	return
+}
+
 // GetOrganizationID Get Org by ID
-func (v *VisualizationClient) GetOrganizationID(OrgID string) (orgID Org, err error) {
+func (v *VisualizationClient) GetOrganizationID(OrgID string) (org Org, err error) {
 	reqURL := fmt.Sprintf("%s/admin/organizations/%s", v.url, OrgID)
 	response, err := v.httpRequest("GET", reqURL, nil, false)
 	if err != nil {
@@ -268,7 +299,7 @@ func (v *VisualizationClient) GetOrganizationID(OrgID string) (orgID Org, err er
 	}
 
 	dec := json.NewDecoder(response)
-	err = dec.Decode(&orgID)
+	err = dec.Decode(&org)
 
 	return
 }
@@ -296,13 +327,15 @@ func (v *VisualizationClient) CreateOrganization(org Org) (orgs Org, err error) 
 		return
 	}
 
-	response, err := v.httpRequest("POST", reqURL, bytes.NewBuffer(jsonStr), false)
+	_, err = v.httpRequest("POST", reqURL, bytes.NewBuffer(jsonStr), false)
 	if err != nil {
 		return
 	}
 
-	dec := json.NewDecoder(response)
-	err = dec.Decode(&orgs)
+	orgs, err = v.GetOrganizationName(org.Name)
+	if err != nil {
+		return
+	}
 
 	return
 }
@@ -317,6 +350,21 @@ func (v *VisualizationClient) GetOrganizationUsers(ID string) (org []UserInOrgan
 
 	dec := json.NewDecoder(response)
 	err = dec.Decode(&org)
+	return
+}
+
+// GetOrganizationUserID gets User details in Organisation by ID
+func (v *VisualizationClient) GetOrganizationUserID(ID string, userID string) (user UserInOrganization, err error) {
+	users, err := v.GetOrganizationUsers(ID)
+	if err != nil {
+		return
+	}
+
+	for _, elem := range users {
+		if elem.UserID == userID {
+			user = elem
+		}
+	}
 	return
 }
 
